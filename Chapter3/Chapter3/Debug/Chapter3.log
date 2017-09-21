@@ -1,0 +1,6 @@
+﻿  1.cpp
+d:\job\kpu\3 - 2\network game programming\플밍\chapter3\chapter3\1.cpp(14): warning C4805: '==': 연산에 'BOOL' 형식과 'bool' 형식을 함께 사용하는 것은 안전하지 않습니다.
+d:\job\kpu\3 - 2\network game programming\플밍\chapter3\chapter3\1.cpp(15): warning C4805: '==': 연산에 'BOOL' 형식과 'bool' 형식을 함께 사용하는 것은 안전하지 않습니다.
+d:\job\kpu\3 - 2\network game programming\플밍\chapter3\chapter3\1.cpp(27): warning C4101: 'x3' :참조되지 않은 지역 변수입니다.
+  Chapter3.vcxproj -> D:\Job\KPU\3 - 2\Network Game Programming\플밍\Chapter3\Debug\Chapter3.exe
+  Chapter3.vcxproj -> D:\Job\KPU\3 - 2\Network Game Programming\플밍\Chapter3\Debug\Chapter3.pdb (Partial PDB)
