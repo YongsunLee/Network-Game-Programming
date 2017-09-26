@@ -52,5 +52,31 @@ BOOL GetDomainName(IN_ADDR addr, char *name, int namelen)
 
 	if (ptr->h_addrtype != AF_INET) return false;
 
-	strncpy();
+	strncpy(name, ptr->h_name, namelen);
+	return true;
+}
+
+int main(int argc, char *argv[])
+{
+	WSADATA wsa;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) return 1;
+
+	printf("도메인 이름 변환전 = %s \n", TESTNAME);
+
+	// 도메인 이름 -> IP 주소
+	IN_ADDR addr;
+
+	if (GetIPAddr(TESTNAME, &addr))
+	{
+		// 성공이면 결과 출력
+		printf("IP 주소(변환 후) = %s\n", inet_ntoa(addr));
+
+		// IP주소 -> 도메인 이름
+		char name[256];
+		if (GetDomainName(addr, name, sizeof(name)))
+			printf("도메인 이름(다시 변환 후) = %s\n", name);
+	}
+	
+	WSACleanup();
+	return 0;
 }

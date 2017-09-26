@@ -1,0 +1,11 @@
+﻿  3-3.cpp
+d:\job\kpu\3 - 2\network game programming\network-game-programming\3-3\3-3\3-3.cpp(26): warning C4996: 'gethostbyname': Use getaddrinfo() or GetAddrInfoW() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.14393.0\um\winsock2.h(2216): note: 'gethostbyname' 선언을 참조하십시오.
+d:\job\kpu\3 - 2\network game programming\network-game-programming\3-3\3-3\3-3.cpp(46): warning C4996: 'gethostbyaddr': Use getnameinfo() or GetNameInfoW() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.14393.0\um\winsock2.h(2194): note: 'gethostbyaddr' 선언을 참조하십시오.
+d:\job\kpu\3 - 2\network game programming\network-game-programming\3-3\3-3\3-3.cpp(55): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.14393.0\ucrt\string.h(335): note: 'strncpy' 선언을 참조하십시오.
+d:\job\kpu\3 - 2\network game programming\network-game-programming\3-3\3-3\3-3.cpp(72): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.14393.0\um\winsock2.h(1846): note: 'inet_ntoa' 선언을 참조하십시오.
+  3-3.vcxproj -> D:\Job\KPU\3 - 2\Network Game Programming\Network-Game-Programming\3-3\Debug\3-3.exe
+  3-3.vcxproj -> D:\Job\KPU\3 - 2\Network Game Programming\Network-Game-Programming\3-3\Debug\3-3.pdb (Partial PDB)
