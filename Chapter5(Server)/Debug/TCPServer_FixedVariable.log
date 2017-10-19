@@ -1,0 +1,10 @@
+﻿  TCPServer_FixedVariable.cpp
+d:\job\kpu\3 - 2\network game programming\network-game-programming\chapter5(server)\tcpserver_fixedvariable.cpp(117): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\job\kpu\3 - 2\network game programming\network-game-programming\chapter5(server)\tcpserver_fixedvariable.cpp(93): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(207): note: 'fopen' 선언을 참조하십시오.
+d:\job\kpu\3 - 2\network game programming\network-game-programming\chapter5(server)\tcpserver_fixedvariable.cpp(106): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.
+d:\job\kpu\3 - 2\network game programming\network-game-programming\chapter5(server)\tcpserver_fixedvariable.cpp(143): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.
+  TCPServer_FixedVariable.vcxproj -> D:\Job\KPU\3 - 2\Network Game Programming\Network-Game-Programming\Chapter5(Server)\Debug\TCPServer_FixedVariable.exe
+  TCPServer_FixedVariable.vcxproj -> D:\Job\KPU\3 - 2\Network Game Programming\Network-Game-Programming\Chapter5(Server)\Debug\TCPServer_FixedVariable.pdb (Partial PDB)

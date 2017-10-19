@@ -1,0 +1,9 @@
+﻿  TCP_Client.cpp
+d:\job\kpu\3 - 2\network game programming\network-game-programming\chapter5(client)\chapter5\tcp_client.cpp(56): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\um\winsock2.h(1830): note: 'inet_addr' 선언을 참조하십시오.
+d:\job\kpu\3 - 2\network game programming\network-game-programming\chapter5(client)\chapter5\tcp_client.cpp(67): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(207): note: 'fopen' 선언을 참조하십시오.
+d:\job\kpu\3 - 2\network game programming\network-game-programming\chapter5(client)\chapter5\tcp_client.cpp(90): warning C4477: 'printf' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 '::size_t'입니다.
+  d:\job\kpu\3 - 2\network game programming\network-game-programming\chapter5(client)\chapter5\tcp_client.cpp(90): note: 서식 문자열에서 '%zd'을(를) 사용하는 것이 좋습니다.
+  Chapter5.vcxproj -> D:\Job\KPU\3 - 2\Network Game Programming\Network-Game-Programming\Chapter5(Client)\x64\Debug\Chapter5.exe
+  Chapter5.vcxproj -> D:\Job\KPU\3 - 2\Network Game Programming\Network-Game-Programming\Chapter5(Client)\x64\Debug\Chapter5.pdb (Partial PDB)

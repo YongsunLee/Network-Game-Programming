@@ -59,11 +59,12 @@ int main(int argc, char *argv[])
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 
 	// 데이터 통신에 사용할 변수
+
 	char *buf;
 	int len = 0;
 
 	//if ((fp = fopen("./1.jpg", "rb")) == NULL) return -1;
-	if ((fp = fopen("./2.mp4", "rb")) == NULL) return -1;
+	if ((fp = fopen("./poppin.zip", "rb")) == NULL) return -1;
 
 	fseek(fp, 0, SEEK_END);
 	len = ftell(fp);
@@ -88,14 +89,20 @@ int main(int argc, char *argv[])
 	}
 	printf("[TCP 클라이언트] %d+%d바이트를 "
 		"보냈습니다.\n", sizeof(void*), retval);
+	// free
+	free(buf);
 
-	// 분할? 버퍼 사이즈 사용
-	/* 
+	// 버퍼 사이즈 사용
+	/*
 
 	char buf[BUFSIZE + 1];
 	int len;
 
 	fp = fopen("./2.mp4", "rb");
+	
+	fseek(fp, 0, SEEK_END);
+	len = ftell(fp);
+	fseek(fp, 0, SEEK_SET);	// 맨 처음값 포인터
 
 	retval = send(sock, (char *)&len, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
@@ -110,11 +117,10 @@ int main(int argc, char *argv[])
 		if (BUFSIZE > retval) {
 			break;
 		}
+		printf("[TCP 클라이언트] %d+%d바이트를 "
+			"보냈습니다.\n", sizeof(void*), retval);
 	}
 	*/
-
-	// free
-	free(buf);
 
 	// fclose
 	fclose(fp);

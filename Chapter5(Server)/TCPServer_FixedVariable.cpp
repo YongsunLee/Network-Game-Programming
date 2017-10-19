@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 	float recvdata = 0.0f;
 
 	//fp = fopen("./1.jpg", "wb");
-	fp = fopen("./2.mp4", "wb");
+	fp = fopen("./poppin.zip", "wb");
 
 	while(1){
 		// accept()
@@ -131,12 +131,6 @@ int main(int argc, char *argv[])
 
 			printf("\r%.1f%%", (recvdata/len) * 100);
 			fwrite(buf, sizeof(char), BUFSIZE, fp);
-
-			// 받은 데이터 출력
-			/*
-			printf("\n[TCP/%s:%d] %d\n", inet_ntoa(clientaddr.sin_addr),
-				ntohs(clientaddr.sin_port), retval);
-			*/
 
 		}
 		// fclose
