@@ -63,8 +63,16 @@ int main(int argc, char *argv[])
 	char *buf;
 	int len = 0;
 
-	//if ((fp = fopen("./1.jpg", "rb")) == NULL) return -1;
-	if ((fp = fopen("./poppin.zip", "rb")) == NULL) return -1;
+	char *filenamebuf;
+	int namelen;
+
+	filenamebuf = new char[255];
+
+	printf("파일명을 입력해 주세요");
+	scanf_s("%s", filenamebuf, sizeof(filenamebuf));
+
+	if ((fp = fopen(filenamebuf, "rb")) == NULL) return -1;
+	//if ((fp = fopen("./poppin.zip", "rb")) == NULL) return -1;
 
 	fseek(fp, 0, SEEK_END);
 	len = ftell(fp);
