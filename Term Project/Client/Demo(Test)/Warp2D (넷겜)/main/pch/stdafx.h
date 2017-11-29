@@ -59,3 +59,26 @@ constexpr D2D_POINT_2F GetPositionByCoord(D2D_SIZE_U sz) noexcept { return D2D_P
 struct ClientMsg {
 	int CheckData;
 };
+
+struct Player {
+	enum PlayerDir {};
+	enum PlayerStatus { Living, Death };
+	D2D1_POINT_2F position;
+	PlayerDir dir;
+	PlayerStatus status;
+};
+
+struct Bomb {
+	enum BombStatus { Drop, Explosion };
+	D2D1_POINT_2F position;
+	BombStatus status;
+};
+
+enum GameStatus { Playing, GameOver };
+
+struct ServerMsg {
+	int Map[12][12];
+	Bomb bomb;
+	Player player;
+	GameStatus gameStatus;
+};

@@ -97,8 +97,10 @@ bool CTestScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 	default:
 		return false;
 	}
+	// 콘솔창
 	AllocConsole();
 	freopen("CONOUT$", "wt", stdout);
+
 	// 키입력 이후 전송
 	m_TCP.ClientSend(m_Msg);
 	return(true);
@@ -134,7 +136,7 @@ bool CTestScene::OnCreate(wstring && tag, CWarp2DFramework * pFramework)
 void CTestScene::Update(float fTimeElapsed)
 {
 	// 서버에서 보낸거 받고
-	m_TCP.ClientRecive();
+	//m_TCP.ClientRecive();
 
 	m_Camera.SetPosition(m_Player.GetPosition());
 

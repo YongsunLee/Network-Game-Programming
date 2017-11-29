@@ -4,6 +4,18 @@
 CClient::CClient()
 {
 	WSAStartup(MAKEWORD(2, 2), &wsa);
+
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == INVALID_SOCKET) err_quit("socket()");
+
+	// connect()
+	SOCKADDR_IN serveraddr;
+	ZeroMemory(&serveraddr, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
+	serveraddr.sin_port = htons(SERVERPORT);
+	int retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
+	if (retval == SOCKET_ERROR) err_quit("connect()");
 }
 
 CClient::~CClient()
@@ -60,18 +72,6 @@ void CClient::ClientSend(ClientMsg msg)
 {
 	int retval;
 
-	sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == INVALID_SOCKET) err_quit("socket()");
-
-	// connect()
-	SOCKADDR_IN serveraddr;
-	ZeroMemory(&serveraddr, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
-	serveraddr.sin_port = htons(SERVERPORT);
-	retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
-	if (retval == SOCKET_ERROR) err_quit("connect()");
-
 	retval = send(sock, (char *)&msg, sizeof(ClientMsg), 0);
 
 	// Print Ãß°¡
@@ -80,16 +80,17 @@ void CClient::ClientSend(ClientMsg msg)
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
-
 }
 
-/*
-ClientMsg CClient::MakeMsg()
+ClientMsg CClient::ClientRecive()
 {
-	return ClientMsg();
-}
-*/
+	int retval;
 
-void CClient::ClientRecive()
-{
+	retval = recvn(sock, (char*)&m_recvMsg, sizeof(ClientMsg), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recvn()");
+	}
+
+	// Decoding
+	return m_recvMsg;
 }

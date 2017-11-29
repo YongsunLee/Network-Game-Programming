@@ -16,11 +16,11 @@ public:
 	void err_display(char *msg);
 	void err_quit(char *msg);
 	void ClientSend(ClientMsg msg);
-	ClientMsg MakeMsg();
-	void ClientRecive();
+	//ClientMsg MakeMsg();
+	ClientMsg ClientRecive();
 
 private:
 	SOCKET sock;
 	WSADATA wsa;
-	ClientMsg m_icheck;
+	ClientMsg m_recvMsg;
 };
