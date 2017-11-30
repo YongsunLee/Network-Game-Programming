@@ -6,10 +6,10 @@
 
 CRITICAL_SECTION cs;
 list<SOCKET> sockList;
-ClientMsg *clientDatabuf[2];
-ClientMsg clientData;
+list<ClientMsg*>clientDatabuf;
 
 
+ClientMsg clientData[2];
 TestPlayer player[2];
 
 
@@ -69,20 +69,26 @@ DWORD WINAPI test(LPVOID arg) {
 	while (1) {
 		EnterCriticalSection(&cs);
 		if (m_timer.Update()) {
+			for (int i = 0; i < nClients; ++i) {
+				player[i].pos[0] += m_timer.GetTimeElapsed()*clientData[i].CheckData[0];
+				player[i].pos[1] += m_timer.GetTimeElapsed()*clientData[i].CheckData[1];
+			}
+
 			for (auto& p : sockList) {
 				retval = send(p, (char *)&player, BUFSIZE, 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 				}
 			}
-			if (clientDatabuf&&sockList.size() != 0) {
-				for (int i = 0; i < nClients; ++i) {
-					player[i].pos[0] += m_timer.GetTimeElapsed()*clientDatabuf[i]->CheckData[0];
-					player[i].pos[1] += m_timer.GetTimeElapsed()*clientDatabuf[i]->CheckData[1];
-					
-				}
-			}
+
 		}
+		if (clientDatabuf.begin() != clientDatabuf.end()) {
+			test = *clientDatabuf.front();
+			clientData[test.ID].CheckData[0] = test.CheckData[0];
+			clientData[test.ID].CheckData[1] = test.CheckData[1];
+			clientDatabuf.pop_front();
+		}
+
 		LeaveCriticalSection(&cs);
 	}
 
@@ -124,9 +130,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		buf[retval] = '\0';
 		recvMsg = (ClientMsg*)buf;
 		// 받은 데이터 출력
-		printf("[TCP/%s:%d] %f\n", inet_ntoa(clientaddr.sin_addr),
-			ntohs(clientaddr.sin_port), recvMsg->CheckData);
-		clientDatabuf[recvMsg->ID]= recvMsg;
+		printf("[TCP/%s:%d] %f,  %f\n", inet_ntoa(clientaddr.sin_addr),
+			ntohs(clientaddr.sin_port), recvMsg->CheckData[0], recvMsg->CheckData[1]);
+		clientDatabuf.push_back(recvMsg);
 
 		LeaveCriticalSection(&cs);
 	}

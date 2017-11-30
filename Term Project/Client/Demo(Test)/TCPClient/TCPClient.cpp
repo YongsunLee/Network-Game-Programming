@@ -155,8 +155,8 @@ int main(int argc, char *argv[])
 	int len;
 
 	testmsg.ID = ClientID;
-	testmsg.CheckData[0] = 0;
-	testmsg.CheckData[1] = 1;
+	testmsg.CheckData[0] = 1;
+	testmsg.CheckData[1] = 0;
 
 	// 서버와 데이터 통신
 	while(1){
