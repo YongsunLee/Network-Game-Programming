@@ -143,6 +143,11 @@ struct ServerMsg {
 
 // 테스트용 구조체
 struct ClientMsg {
-	int CheckData;
+	UINT ID;
+	float CheckData[2];
 	//D2D_POINT_2F Dir;
+};
+
+struct TestPlayer {
+	float pos[2] {0,0};
 };

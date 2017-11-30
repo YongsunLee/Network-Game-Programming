@@ -14,11 +14,17 @@ struct Vec2 {
 
 // 테스트용 구조체
 struct ClientMsg {
-	int CheckData;
-	//Vec2 Pos;
+	UINT ID;
+	float CheckData[2];
+	//D2D_POINT_2F Dir;
 };
 
+struct TestPlayer {
+	float pos[2];
+};
 
+TestPlayer player[2];
+UINT ClientID;
 // 소켓 함수 오류 출력 후 종료
 void err_quit(char *msg)
 {
@@ -73,6 +79,8 @@ DWORD WINAPI test(LPVOID arg) {
 	char buf[BUFSIZE];
 	ClientMsg testMsg;
 
+
+
 	while (1) {
 		// 데이터 받기
 		retval = recvn(sock, buf, BUFSIZE, 0);
@@ -83,10 +91,13 @@ DWORD WINAPI test(LPVOID arg) {
 		else if (retval == 0)
 			break;
 
-		memcpy(&testMsg, buf, retval);
+		memcpy(&player, buf, retval);
 
 		// 받은 데이터 출력
-		printf("%d\n", testMsg.CheckData);
+		for (int i = 0; i < 2; ++i) {
+
+		printf("%f,  %f\n", player[i].pos[0], player[i].pos[1]);
+		}
 	}
 	return 0;
 }
@@ -126,16 +137,26 @@ int main(int argc, char *argv[])
 	retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
 	if(retval == SOCKET_ERROR) err_quit("connect()");
 
+	char buf[BUFSIZE];
+
+
+	retval = recvn(sock, buf, BUFSIZE, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+		return 0;
+	}
+	memcpy(&ClientID, buf, retval);
 	hThread = CreateThread(NULL, 0, test,
 		(LPVOID)sock, 0, NULL);
 	if (hThread == NULL) { closesocket(sock); }
 	else { CloseHandle(hThread); }
 
 	// 데이터 통신에 사용할 변수
-	char buf[BUFSIZE+1];
 	int len;
 
-	testmsg.CheckData = 1;
+	testmsg.ID = ClientID;
+	testmsg.CheckData[0] = 0;
+	testmsg.CheckData[1] = 1;
 
 	// 서버와 데이터 통신
 	while(1){

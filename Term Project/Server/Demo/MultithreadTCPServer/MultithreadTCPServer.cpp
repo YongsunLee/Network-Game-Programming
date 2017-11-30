@@ -6,11 +6,15 @@
 
 CRITICAL_SECTION cs;
 list<SOCKET> sockList;
-ClientMsg *clientDatabuf;
+ClientMsg *clientDatabuf[2];
 ClientMsg clientData;
 
-CTimer m_timer;
 
+TestPlayer player[2];
+
+
+CTimer m_timer;
+UINT nClients=0;
 // 소켓 함수 오류 출력 후 종료
 void err_quit(char *msg)
 {
@@ -60,20 +64,24 @@ int recvn(SOCKET s, char *buf, int len, int flags)
 DWORD WINAPI test(LPVOID arg) {
 	int retval;
 	ClientMsg test;
-	
+
 
 	while (1) {
 		EnterCriticalSection(&cs);
 		if (m_timer.Update()) {
 			for (auto& p : sockList) {
-				retval = send(p, (char *)&clientData, BUFSIZE, 0);
+				retval = send(p, (char *)&player, BUFSIZE, 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 				}
 			}
-		}
-		if (clientDatabuf&&sockList.size() != 0) {
-			clientData.CheckData += clientDatabuf->CheckData;
+			if (clientDatabuf&&sockList.size() != 0) {
+				for (int i = 0; i < nClients; ++i) {
+					player[i].pos[0] += m_timer.GetTimeElapsed()*clientDatabuf[i]->CheckData[0];
+					player[i].pos[1] += m_timer.GetTimeElapsed()*clientDatabuf[i]->CheckData[1];
+					
+				}
+			}
 		}
 		LeaveCriticalSection(&cs);
 	}
@@ -88,14 +96,21 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	int retval;
 	SOCKADDR_IN clientaddr;
 	int addrlen;
-	char buf[BUFSIZE+1];
-	D2D_POINT_2F Pos{0,0};
+	char buf[BUFSIZE + 1];
+	D2D_POINT_2F Pos{ 0,0 };
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR *)&clientaddr, &addrlen);
 
-	while(1){
+	retval = send(client_sock, (char *)&nClients, BUFSIZE, 0);
+	nClients++;
+
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	ClientMsg* recvMsg;
+	while (1) {
 		// 데이터 받기
 		retval = recvn(client_sock, buf, BUFSIZE, 0);
 		if (retval == SOCKET_ERROR) {
@@ -107,10 +122,12 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		EnterCriticalSection(&cs);
 		buf[retval] = '\0';
-		clientDatabuf = (ClientMsg*)buf;
+		recvMsg = (ClientMsg*)buf;
 		// 받은 데이터 출력
-		printf("[TCP/%s:%d] %d\n", inet_ntoa(clientaddr.sin_addr),
-			ntohs(clientaddr.sin_port), clientDatabuf->CheckData);
+		printf("[TCP/%s:%d] %f\n", inet_ntoa(clientaddr.sin_addr),
+			ntohs(clientaddr.sin_port), recvMsg->CheckData);
+		clientDatabuf[recvMsg->ID]= recvMsg;
+
 		LeaveCriticalSection(&cs);
 	}
 	EnterCriticalSection(&cs);
@@ -139,12 +156,15 @@ int main(int argc, char *argv[])
 
 	// 윈속 초기화
 	WSADATA wsa;
-	if(WSAStartup(MAKEWORD(2,2), &wsa) != 0)
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
+
+	//////////////////////////
+	//////////////////////////
 
 	// socket()
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
-	if(listen_sock == INVALID_SOCKET) err_quit("socket()");
+	if (listen_sock == INVALID_SOCKET) err_quit("socket()");
 
 	// bind()
 	SOCKADDR_IN serveraddr;
@@ -153,11 +173,11 @@ int main(int argc, char *argv[])
 	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = bind(listen_sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
-	if(retval == SOCKET_ERROR) err_quit("bind()");
+	if (retval == SOCKET_ERROR) err_quit("bind()");
 
 	// listen()
 	retval = listen(listen_sock, SOMAXCONN);
-	if(retval == SOCKET_ERROR) err_quit("listen()");
+	if (retval == SOCKET_ERROR) err_quit("listen()");
 
 	// 데이터 통신에 사용할 변수
 	SOCKET client_sock;
@@ -169,17 +189,17 @@ int main(int argc, char *argv[])
 	if (hThread == NULL) { closesocket(client_sock); }
 	else { CloseHandle(hThread); }
 
-	while(1){
+	while (1) {
 		// accept()
 		addrlen = sizeof(clientaddr);
 		client_sock = accept(listen_sock, (SOCKADDR *)&clientaddr, &addrlen);
-		if(client_sock == INVALID_SOCKET){
+		if (client_sock == INVALID_SOCKET) {
 			err_display("accept()");
 			break;
 		}
-		
+
 		EnterCriticalSection(&cs);
-			sockList.push_back(client_sock);
+		sockList.push_back(client_sock);
 		LeaveCriticalSection(&cs);
 
 		// 접속한 클라이언트 정보 출력
@@ -189,7 +209,7 @@ int main(int argc, char *argv[])
 		// 스레드 생성
 		hThread = CreateThread(NULL, 0, ProcessClient,
 			(LPVOID)client_sock, 0, NULL);
-		if(hThread == NULL) { closesocket(client_sock); }
+		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 
 	}
