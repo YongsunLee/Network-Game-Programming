@@ -38,6 +38,8 @@ using namespace Microsoft::WRL;
 #include <wincodec.h>
 using namespace D2D1;
 
+#include "Timer.h"
+
 //// Bitmap
 //#include "D2DLoadBitmap.h"
 //#include "D2D_Operator.h"
@@ -58,6 +60,11 @@ enum Colide {
 };
 
 #define MAZE_SIZE 12
+
+#define MAX_FPS 1.0 / 1.0
+#define TITLE_MAX_LENGTH 64
+
+#define MAX_UPDATE_FPS 1.0 / 3.0
 
 struct Map
 {

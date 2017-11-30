@@ -14,7 +14,7 @@
     <ProjectGuid>{A95CF41B-584C-4CFD-A9E1-01DB6ADA33EF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TCPClient</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

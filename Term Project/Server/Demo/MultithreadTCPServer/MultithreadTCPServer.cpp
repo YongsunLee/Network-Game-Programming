@@ -6,7 +6,10 @@
 
 CRITICAL_SECTION cs;
 list<SOCKET> sockList;
+ClientMsg *clientDatabuf;
 ClientMsg clientData;
+
+CTimer m_timer;
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(char *msg)
@@ -56,14 +59,21 @@ int recvn(SOCKET s, char *buf, int len, int flags)
 
 DWORD WINAPI test(LPVOID arg) {
 	int retval;
+	ClientMsg test;
 	
+
 	while (1) {
 		EnterCriticalSection(&cs);
-		for (auto& p : sockList) {
-			retval = send(p, (char *)&clientData, BUFSIZE, 0);
-			if (retval == SOCKET_ERROR) {
-				err_display("send()");
+		if (m_timer.Update()) {
+			for (auto& p : sockList) {
+				retval = send(p, (char *)&clientData, BUFSIZE, 0);
+				if (retval == SOCKET_ERROR) {
+					err_display("send()");
+				}
 			}
+		}
+		if (clientDatabuf&&sockList.size() != 0) {
+			clientData.CheckData += clientDatabuf->CheckData;
 		}
 		LeaveCriticalSection(&cs);
 	}
@@ -96,13 +106,23 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			break;
 
 		EnterCriticalSection(&cs);
-			memcpy(&clientData, buf, retval);
-			// 받은 데이터 출력
-			printf("[TCP/%s:%d] %d\n", inet_ntoa(clientaddr.sin_addr),
-				ntohs(clientaddr.sin_port), clientData.CheckData);
+		buf[retval] = '\0';
+		clientDatabuf = (ClientMsg*)buf;
+		// 받은 데이터 출력
+		printf("[TCP/%s:%d] %d\n", inet_ntoa(clientaddr.sin_addr),
+			ntohs(clientaddr.sin_port), clientDatabuf->CheckData);
 		LeaveCriticalSection(&cs);
 	}
+	EnterCriticalSection(&cs);
 
+	for (auto iter = sockList.begin(); iter != sockList.end(); ++iter)
+	{
+		if (*iter == client_sock) {
+			sockList.erase(iter);
+			break;
+		}
+	}
+	LeaveCriticalSection(&cs);
 	// closesocket()
 	closesocket(client_sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
