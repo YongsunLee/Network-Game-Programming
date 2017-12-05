@@ -68,6 +68,14 @@ DWORD WINAPI test(LPVOID arg) {
 
 	while (1) {
 		EnterCriticalSection(&cs);
+		// 비어있지 않으면
+		if (clientDatabuf.begin() != clientDatabuf.end()) {
+			test = *clientDatabuf.front();
+			clientData[test.ID].CheckData[0] = test.CheckData[0];	// x
+			clientData[test.ID].CheckData[1] = test.CheckData[1];	// y
+			clientDatabuf.pop_front();
+		}
+		
 		if (m_timer.Update()) {
 			for (int i = 0; i < nClients; ++i) {
 				player[i].pos[0] += m_timer.GetTimeElapsed()*clientData[i].CheckData[0];
@@ -80,13 +88,6 @@ DWORD WINAPI test(LPVOID arg) {
 					err_display("send()");
 				}
 			}
-
-		}
-		if (clientDatabuf.begin() != clientDatabuf.end()) {
-			test = *clientDatabuf.front();
-			clientData[test.ID].CheckData[0] = test.CheckData[0];
-			clientData[test.ID].CheckData[1] = test.CheckData[1];
-			clientDatabuf.pop_front();
 		}
 
 		LeaveCriticalSection(&cs);

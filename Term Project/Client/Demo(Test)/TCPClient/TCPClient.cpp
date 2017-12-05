@@ -79,8 +79,6 @@ DWORD WINAPI test(LPVOID arg) {
 	char buf[BUFSIZE];
 	ClientMsg testMsg;
 
-
-
 	while (1) {
 		// 데이터 받기
 		retval = recvn(sock, buf, BUFSIZE, 0);
