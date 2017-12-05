@@ -46,6 +46,8 @@ CNetwork::CNetwork()
 
 CNetwork::~CNetwork()
 {
+	DeleteCriticalSection(&cs);
+
 	// closesocket()
 	closesocket(sock);
 
@@ -80,7 +82,6 @@ void CNetwork::MakeMsg(D2D_POINT_2F dir)
 	testmsg.CheckData[1] = dir.y;
 
 	ClientSend((char *)&testmsg, sock);
-
 }
 
 DWORD  WINAPI test(LPVOID arg)
@@ -89,8 +90,6 @@ DWORD  WINAPI test(LPVOID arg)
 	int retval;
 	char buf[BUFSIZE];
 	ClientMsg testMsg;
-
-
 
 	while (1) {
 		// 데이터 받기

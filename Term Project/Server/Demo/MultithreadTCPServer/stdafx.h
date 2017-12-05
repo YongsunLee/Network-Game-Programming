@@ -61,7 +61,7 @@ enum Colide {
 
 #define MAZE_SIZE 12
 
-#define MAX_FPS 1.0 / 1.0
+#define MAX_FPS 1.0 / 60.0
 #define TITLE_MAX_LENGTH 64
 
 #define MAX_UPDATE_FPS 1.0 / 3.0

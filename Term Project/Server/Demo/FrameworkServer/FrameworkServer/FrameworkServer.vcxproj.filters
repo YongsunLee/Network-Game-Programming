@@ -40,6 +40,9 @@
     <Filter Include="Framework\Timer">
       <UniqueIdentifier>{ab7f3eca-b167-4d80-82b1-dc6a26a70960}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{af831006-e60c-447a-9077-05657b1c88e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -90,6 +93,9 @@
     <ClInclude Include="D2D_Operator.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Network\Network.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FrameworkServer.cpp">
@@ -121,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="Framework\Timer\Timer.cpp">
       <Filter>Framework\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Network.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

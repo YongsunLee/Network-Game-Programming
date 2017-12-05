@@ -133,8 +133,8 @@ bool CTestScene::OnCreate(wstring && tag, CWarp2DFramework * pFramework)
 {
 	if (!Base::OnCreate(std::move(tag), pFramework)) return false;
 
-	//m_pNetwork = make_unique<CNetwork>();
-	//m_pNetwork.get()->OnCreate();
+	m_pNetwork = make_unique<CNetwork>();
+	m_pNetwork.get()->OnCreate();
 
 	auto rcClient = m_pFramework->GetClientSize();
 	m_Camera.SetClientSize(Point2F(rcClient.right, rcClient.bottom));
@@ -173,8 +173,8 @@ void CTestScene::Update(float fTimeElapsed)
 {
 
 	//m_Camera.SetPosition(m_Player.GetPosition());
-	//m_pNetwork->MakeMsg(m_Player.GetMove());
-	//m_Player.SetPosition(m_pNetwork->GetMsg());
+	m_pNetwork->MakeMsg(m_Player.GetMove());
+	m_Player.SetPosition(m_pNetwork->GetMsg());
 	for (auto& p : m_lstBlock) {
 		auto pos = m_Player.GetPosition() + m_Player.GetSize();
 		if (p->Colided(pos + m_Player.GetMove()))

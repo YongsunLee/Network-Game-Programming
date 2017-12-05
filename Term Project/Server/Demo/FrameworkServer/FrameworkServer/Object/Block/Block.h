@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Object/Object.h"
-class CIndRes;
 
 class CBlock
 	: public CObject

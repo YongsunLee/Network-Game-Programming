@@ -42,6 +42,6 @@ private:
 	list<unique_ptr<CBlock>>		m_lstBlock;
 	list<unique_ptr<CBomb>>			m_lstBoom;
 	
-	//unique_ptr<CNetwork>				m_pNetwork;
+	unique_ptr<CNetwork>				m_pNetwork;
 	CUIInventory					m_uiInventory;
 };

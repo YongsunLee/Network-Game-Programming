@@ -8,10 +8,8 @@ CRITICAL_SECTION cs;
 list<SOCKET> sockList;
 list<ClientMsg*>clientDatabuf;
 
-
 ClientMsg clientData[2];
 TestPlayer player[2];
-
 
 CTimer m_timer;
 UINT nClients=0;
@@ -65,7 +63,6 @@ DWORD WINAPI test(LPVOID arg) {
 	int retval;
 	ClientMsg test;
 
-
 	while (1) {
 		EnterCriticalSection(&cs);
 		// 비어있지 않으면
@@ -116,6 +113,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
+
 	ClientMsg* recvMsg;
 	while (1) {
 		// 데이터 받기

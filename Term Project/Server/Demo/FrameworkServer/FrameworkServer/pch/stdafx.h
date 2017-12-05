@@ -2,7 +2,6 @@
 // 표준 시스템 포함 파일 또는 프로젝트 관련 포함 파일이
 // 들어 있는 포함 파일입니다.
 //
-
 #pragma once
 
 #include "targetver.h"
@@ -28,7 +27,7 @@
 #include <random>
 #include <chrono>
 #include <memory>
-#include <functional>
+//#include <functional>
 #include <string>
 using namespace std;
 
@@ -45,10 +44,7 @@ using namespace Microsoft::WRL;
 #include <wincodec.h>
 using namespace D2D1;
 
-// Bitmap
-#include "D2DLoadBitmap.h"
 #include "D2D_Operator.h"
-using namespace D2DBitmap;
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 #include "SystemDefine.h"
@@ -65,6 +61,9 @@ enum Colide {
 };
 
 #define MAZE_SIZE 12
+
+#define SERVERPORT 9000
+#define BUFSIZE    512
 
 struct Map
 {

@@ -1,7 +1,5 @@
 #include "stdafx.h"
-
 #include "Framework/Warp2DFramework.h"
-
 #include "Scene.h"
 
 CScene::CScene()
@@ -67,7 +65,6 @@ bool CScene::OnCreate(wstring&& tag, CWarp2DFramework * framework)
 		return false;
 	}
 	m_hWnd = m_pFramework->GethWnd();
-	m_pIndRes = m_pFramework->GetIndRes();
 
 	return true;
 }

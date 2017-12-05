@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Object/Object.h"
-class CIndRes;
 
 class CPlayer
 	: public CObject
@@ -41,6 +40,4 @@ private:
 	D2D_POINT_2F				m_Move;
 
 	Dir							m_Direction;
-	D2D_SIZE_U					m_szSprite;
-	UINT						m_iSprite;
 };

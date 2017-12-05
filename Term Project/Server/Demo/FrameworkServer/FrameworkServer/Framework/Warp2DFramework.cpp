@@ -3,7 +3,7 @@
 #include "Timer/Timer.h"
 #include "Scene/Scene.h"
 #include "Scene/Test/TestScene.h"
-
+#include "Network/Network.h"
 #include "Warp2DFramework.h"
 
 CWarp2DFramework::CWarp2DFramework() 
@@ -14,7 +14,7 @@ CWarp2DFramework::~CWarp2DFramework()
 {
 }
 
-void CWarp2DFramework::OnCreate(HWND hWnd, HINSTANCE hInst, shared_ptr<CIndRes> indres, shared_ptr<CTimer> timer)
+void CWarp2DFramework::OnCreate(HWND hWnd, HINSTANCE hInst, shared_ptr<CTimer> timer)
 {
 	RegisterTimer(timer);
 
@@ -100,10 +100,6 @@ LRESULT CWarp2DFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, 
 				nWndClientHeight = CLIENT_MINIMUM_HEIGHT - GetMarginHeight();
 
 			m_rcClient = RectL(0, 0, nWndClientWidth, nWndClientHeight);
-
-			m_pd2dRenderTarget->Resize(SizeU(nWndClientWidth, nWndClientHeight));
-			
-			Draw();
 
 			return DefWindowProc(hWnd, nMessageID, wParam, lParam);
 		}

@@ -13,7 +13,7 @@ public:
 	void RegisterTimer(shared_ptr<CTimer> timer) { m_pTimer = timer; }
 
 	// Framework 만들 때
-	void OnCreate(HWND hWnd, HINSTANCE hInst, shared_ptr<CIndRes> indres, shared_ptr<CTimer> timer);
+	void OnCreate(HWND hWnd, HINSTANCE hInst, shared_ptr<CTimer> timer);
 	
 	// Scene 만들 때
 	template<typename Scene>
@@ -31,7 +31,6 @@ public:
 
 private:
 	void BuildScene(wstring Tag, const unique_ptr<CScene>& scene);
-
 
 public:
 
@@ -65,10 +64,11 @@ private:
 
 	shared_ptr<CTimer>				m_pTimer			{ nullptr }	;
 
-	ComPtr<ID2D1HwndRenderTarget>	m_pd2dRenderTarget	{ nullptr }	;
-
 	D2D_RECT_L						m_rcClient						;
 
 	list<unique_ptr<CScene>>		m_lstScenes						;
 	CScene*							m_pCurrentScene		{ nullptr }	;
+
+	CNetwork						m_Network;
+
 };
