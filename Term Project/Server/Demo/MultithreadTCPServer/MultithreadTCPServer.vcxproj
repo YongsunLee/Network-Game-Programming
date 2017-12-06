@@ -53,6 +53,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -68,6 +69,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -78,10 +80,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MultithreadTCPServer.cpp" />
+    <ClCompile Include="Object\Block\Block.cpp" />
+    <ClCompile Include="Object\Item\Item.cpp" />
+    <ClCompile Include="Object\Object.cpp" />
+    <ClCompile Include="Object\Player\Player.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="D2D_Operator.h" />
+    <ClInclude Include="Object\Block\Block.h" />
+    <ClInclude Include="Object\Item\Item.h" />
+    <ClInclude Include="Object\Object.h" />
+    <ClInclude Include="Object\Player\Player.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SystemDefine.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

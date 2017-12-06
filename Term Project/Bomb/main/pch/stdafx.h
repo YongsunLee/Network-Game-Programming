@@ -61,6 +61,8 @@ using namespace D2DBitmap;
 #include "SystemDefine.h"
 #include "inlineFuncs.h"
 
+
+
 constexpr D2D_POINT_2F GetPositionByCoord(D2D_SIZE_U sz) noexcept { return D2D_POINT_2F{ sz.width * g_fTileWidth, sz.height * g_fTileHeight }; }
 
 enum Colide {
@@ -109,11 +111,6 @@ struct Map
 
 // 테스트용 구조체
 struct ClientMsg {
-	UINT ID;
 	float CheckData[2];
 	//D2D_POINT_2F Dir;
-};
-
-struct TestPlayer {
-	float pos[2];
 };

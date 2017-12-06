@@ -6,11 +6,20 @@
 
 CRITICAL_SECTION cs;
 list<SOCKET> sockList;
-list<ClientMsg*>clientDatabuf;
+list<QMsg>clientDatabuf;
 
-ClientMsg clientData[2];
-TestPlayer player[2];
 
+SendMsg sendMsg;
+
+
+CPlayer							m_Player[2];
+Map								m_Map;
+
+list<unique_ptr<CBlock>>		m_lstBlock;
+//list<unique_ptr<CBomb>>		m_lstBoom;
+
+void OnCreate();
+void Update(float fTimeElapsed, QMsg msg);
 CTimer m_timer;
 UINT nClients=0;
 // 소켓 함수 오류 출력 후 종료
@@ -61,26 +70,28 @@ int recvn(SOCKET s, char *buf, int len, int flags)
 
 DWORD WINAPI test(LPVOID arg) {
 	int retval;
-	ClientMsg test;
+	QMsg test;
+
 
 	while (1) {
 		EnterCriticalSection(&cs);
 		// 비어있지 않으면
-		if (clientDatabuf.begin() != clientDatabuf.end()) {
-			test = *clientDatabuf.front();
-			clientData[test.ID].CheckData[0] = test.CheckData[0];	// x
-			clientData[test.ID].CheckData[1] = test.CheckData[1];	// y
+		if (!clientDatabuf.empty()) {
+			test = clientDatabuf.front();
 			clientDatabuf.pop_front();
+			Update(m_timer.GetTimeElapsed(), test);
 		}
 		
 		if (m_timer.Update()) {
 			for (int i = 0; i < nClients; ++i) {
-				player[i].pos[0] += m_timer.GetTimeElapsed()*clientData[i].CheckData[0];
-				player[i].pos[1] += m_timer.GetTimeElapsed()*clientData[i].CheckData[1];
+				
+				sendMsg.playerPos[i] = m_Player[i].GetPosition();
+				sendMsg.moveVec[i] = m_Player[i].GetDir();
+
 			}
 
 			for (auto& p : sockList) {
-				retval = send(p, (char *)&player, BUFSIZE, 0);
+				retval = send(p, (char *)&sendMsg, BUFSIZE, 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("send()");
 				}
@@ -102,18 +113,17 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	int addrlen;
 	char buf[BUFSIZE + 1];
 	D2D_POINT_2F Pos{ 0,0 };
-
+	UINT ID = nClients;
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR *)&clientaddr, &addrlen);
 
 	retval = send(client_sock, (char *)&nClients, BUFSIZE, 0);
 	nClients++;
-
+	
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
-
 	ClientMsg* recvMsg;
 	while (1) {
 		// 데이터 받기
@@ -125,16 +135,19 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		else if (retval == 0)
 			break;
 
-		EnterCriticalSection(&cs);
 		buf[retval] = '\0';
 		recvMsg = (ClientMsg*)buf;
-		// 받은 데이터 출력
-		printf("[TCP/%s:%d] %f,  %f\n", inet_ntoa(clientaddr.sin_addr),
-			ntohs(clientaddr.sin_port), recvMsg->CheckData[0], recvMsg->CheckData[1]);
-		clientDatabuf.push_back(recvMsg);
+
+		EnterCriticalSection(&cs);
+		QMsg qmsg;
+		qmsg.ID = ID;
+		qmsg.msg = recvMsg;
+		clientDatabuf.push_back(qmsg);
 
 		LeaveCriticalSection(&cs);
 	}
+
+
 	EnterCriticalSection(&cs);
 
 	for (auto iter = sockList.begin(); iter != sockList.end(); ++iter)
@@ -189,11 +202,11 @@ int main(int argc, char *argv[])
 	SOCKADDR_IN clientaddr;
 	int addrlen;
 	HANDLE hThread;
+	OnCreate();
 
 	hThread = CreateThread(NULL, 0, test, 0, 0, NULL);
 	if (hThread == NULL) { closesocket(client_sock); }
 	else { CloseHandle(hThread); }
-
 	while (1) {
 		// accept()
 		addrlen = sizeof(clientaddr);
@@ -228,4 +241,37 @@ int main(int argc, char *argv[])
 	// 윈속 종료
 	WSACleanup();
 	return 0;
+}
+
+void OnCreate()
+{
+	m_Player[0] = CPlayer(SizeU(0, 0));
+	m_Player[1] = CPlayer(SizeU(10, 0));
+
+	for (int i = 0; i < 12; ++i)
+		for (int j = 0; j < 12; ++j)
+		{
+			if (m_Map.m_ppMap[i][j] == 1) {
+				auto block = make_unique<CBlock>(SizeU(i, j));
+				m_lstBlock.push_back(move(block));
+
+			}
+		}
+}
+
+void Update(float fTimeElapsed, QMsg msg)
+{
+	int i = msg.ID;
+	m_Player[i].SetMoveX(msg.msg->CheckData[0]);
+	m_Player[i].SetMoveY(msg.msg->CheckData[1]);
+	for (auto& p  :m_lstBlock) {
+		auto pos = m_Player[i].GetPosition() + m_Player[i].GetSize();
+		if (p->Colided(pos + m_Player[i].GetMove()))
+		{
+			m_Player[i].Move(-1 * m_Player[i].GetMove(), fTimeElapsed);
+		}
+	}
+
+	m_Player[i].Update(fTimeElapsed);
+	
 }

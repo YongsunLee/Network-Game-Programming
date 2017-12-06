@@ -7,7 +7,7 @@
 
 
 CTestScene::CTestScene()
-	: m_Player{ SizeU(0, 0) }
+	: m_Player{ SizeU(0, 0) }, m_Player2{ SizeU(10, 0) }
 {
 }
 
@@ -77,7 +77,6 @@ bool CTestScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 		switch (wParam)
 		{
 		case 'A':
-
 		{
 			m_Player.SetMoveX(-1);
 		}
@@ -151,9 +150,8 @@ bool CTestScene::OnCreate(wstring && tag, CWarp2DFramework * pFramework)
 
 	m_Player.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
 	m_Player.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
-
-	uniform_int_distribution<> pos_random{ 0,11 };
-	default_random_engine reng(random_device{}());
+	m_Player2.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
+	m_Player2.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
 
 	for (int i = 0; i < 12; ++i)
 		for (int j = 0; j < 12; ++j)
@@ -174,15 +172,19 @@ void CTestScene::Update(float fTimeElapsed)
 
 	//m_Camera.SetPosition(m_Player.GetPosition());
 	m_pNetwork->MakeMsg(m_Player.GetMove());
-	m_Player.SetPosition(m_pNetwork->GetMsg());
-	for (auto& p : m_lstBlock) {
+	m_Player.SetPosition(m_pNetwork->GetPosition(0));
+	m_Player.SetDir(m_pNetwork->GetMove(0));
+
+	m_Player2.SetPosition(m_pNetwork->GetPosition(1));
+	m_Player2.SetDir(m_pNetwork->GetMove(1));
+	/*for (auto& p : m_lstBlock) {
 		auto pos = m_Player.GetPosition() + m_Player.GetSize();
 		if (p->Colided(pos + m_Player.GetMove()))
 		{
 			m_Player.Move(-1 * m_Player.GetMove(), fTimeElapsed);
 		}
 	}
-
+*/
 	for (auto& p : m_lstBoom) {
 		p->Update(fTimeElapsed);
 		auto pos = m_Player.GetPosition() + m_Player.GetSize();
@@ -216,7 +218,7 @@ void CTestScene::Update(float fTimeElapsed)
 
 
 	m_Player.Update(fTimeElapsed);
-	m_Player.GetCoord();
+	m_Player2.Update(fTimeElapsed);
 
 }
 
@@ -240,6 +242,7 @@ void CTestScene::Draw(ID2D1HwndRenderTarget * pd2dRenderTarget)
 
 
 	m_Player.Draw(pd2dRenderTarget);
+	m_Player2.Draw(pd2dRenderTarget);
 
 }
 

@@ -39,6 +39,15 @@ using namespace Microsoft::WRL;
 using namespace D2D1;
 
 #include "Timer.h"
+#include "D2D_Operator.h"
+#include "SystemDefine.h"
+
+
+////////////////////////////////
+#include "Object\Block\Block.h"
+#include "Object\Item\Item.h"
+#include "Object\Player\Player.h"
+///////////////////////////////
 
 //// Bitmap
 //#include "D2DLoadBitmap.h"
@@ -143,11 +152,15 @@ struct ServerMsg {
 
 // 테스트용 구조체
 struct ClientMsg {
-	UINT ID;
 	float CheckData[2];
 	//D2D_POINT_2F Dir;
 };
+struct QMsg {
+	int ID;
+	ClientMsg* msg;
+};
 
-struct TestPlayer {
-	float pos[2] {0,0};
+struct SendMsg {
+	D2D_POINT_2F playerPos[2];
+	CPlayer::Dir moveVec[2];
 };

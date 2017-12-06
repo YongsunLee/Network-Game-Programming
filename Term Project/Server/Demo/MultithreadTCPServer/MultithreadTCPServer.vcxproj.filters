@@ -16,6 +16,18 @@
     <Filter Include="Timer">
       <UniqueIdentifier>{ed20844b-9fa6-48c5-9e44-462373be9aee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{46a70c92-6e48-4627-a899-5bf2dfa0ea81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Player">
+      <UniqueIdentifier>{2579d6e6-c3cd-4d85-bd46-d5f50d6f6798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Item">
+      <UniqueIdentifier>{bc01bada-6d2e-41a6-958e-39a0c799bb37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Block">
+      <UniqueIdentifier>{a0960392-3d66-4762-90ed-12d8050b2349}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MultithreadTCPServer.cpp">
@@ -24,12 +36,42 @@
     <ClCompile Include="Timer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Object.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Player\Player.cpp">
+      <Filter>Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Block\Block.cpp">
+      <Filter>Object\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Item\Item.cpp">
+      <Filter>Object\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Object.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Player\Player.h">
+      <Filter>Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Block\Block.h">
+      <Filter>Object\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Item\Item.h">
+      <Filter>Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="D2D_Operator.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemDefine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,7 +4,7 @@
 
 CPlayer::CPlayer(D2D_SIZE_U sz)
 	: CObject(Point2F(sz.width * g_fTileWidth, sz.height * g_fTileHeight), g_rcPlayermRect)
-	, m_szCoord{ sz }
+	, m_szCoord{ sz } ,m_Direction {Dir::bottom}
 {
 }
 
@@ -21,10 +21,10 @@ void CPlayer::Update(float fTimeElapsed)
 	if (m_fTick > 4.f)
 		m_fTick -= 4.f;
 
-	CheckInput();
-	Move(fTimeElapsed);
+	//CheckInput();
+	//Move(fTimeElapsed);
 	}
-	CloseCoord();
+	//CloseCoord();
 }
 
 void CPlayer::Draw(ID2D1HwndRenderTarget * RenderTarget)
@@ -129,7 +129,7 @@ void CPlayer::CloseCoord()
 
 void CPlayer::CheckInput()
 {
-	if (m_Move.x != 0 || m_Move.y != 0) {
+	//if (m_Move.x != 0 || m_Move.y != 0) {
 
 		if (m_Move.x > 0) {
 			m_Direction = right;
@@ -143,5 +143,5 @@ void CPlayer::CheckInput()
 		else if (m_Move.y < 0) {
 			m_Direction = top;
 		}
-	}
+	//}
 }

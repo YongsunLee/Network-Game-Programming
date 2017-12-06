@@ -193,6 +193,8 @@ CScene * CWarp2DFramework::FindScene(std::wstring Tag)
 	return ChangeScene == end(m_lstScenes) ? nullptr : ChangeScene->get();
 }
 
+
+
 LRESULT CALLBACK CWarp2DFramework::WndProc(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	auto self = ::GetUserDataPtr<CWarp2DFramework*>(hWnd);

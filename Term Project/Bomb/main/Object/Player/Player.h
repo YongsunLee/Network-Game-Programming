@@ -9,6 +9,7 @@ class CPlayer
 public:
 	enum Dir { left = 1, top = 3, right = 2, bottom = 0 };
 
+	CPlayer() {}
 	CPlayer(D2D_SIZE_U pt);
 	virtual ~CPlayer() override;
 
@@ -24,6 +25,7 @@ public:
 	void SetMoveX(float move) {
 		if (IsActive)m_Move.x = move;
 	}
+	void SetDir(Dir dir) { m_Direction = dir; }
 	void SetMoveY(float move) { m_Move.y = move; }
 	void SetMove(D2D_POINT_2F move) { m_Move = move;}
 	void Move(float fTimeElapsed);
@@ -37,6 +39,7 @@ public:
 	D2D_POINT_2F GetMove() { return m_Move; }
 	float GetMoveX() {return m_Move.x; }
 	float GetMoveY() {return m_Move.y; }
+	Dir GetDir() { return m_Direction; }
 
 	const D2D_SIZE_U& GetCoord() const { return m_szCoord; }
 

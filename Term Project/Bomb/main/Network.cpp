@@ -46,10 +46,10 @@ CNetwork::CNetwork()
 
 CNetwork::~CNetwork()
 {
-	DeleteCriticalSection(&cs);
-
 	// closesocket()
 	closesocket(sock);
+
+	DeleteCriticalSection(&cs);
 
 	// 윈속 종료
 	WSACleanup();
@@ -77,11 +77,11 @@ void CNetwork::MakeMsg(D2D_POINT_2F dir)
 {
 	ClientMsg testmsg;
 
-	testmsg.ID = ClientID;
 	testmsg.CheckData[0] = dir.x;
 	testmsg.CheckData[1] = dir.y;
 
 	ClientSend((char *)&testmsg, sock);
+
 }
 
 DWORD  WINAPI test(LPVOID arg)
@@ -90,6 +90,8 @@ DWORD  WINAPI test(LPVOID arg)
 	int retval;
 	char buf[BUFSIZE];
 	ClientMsg testMsg;
+
+
 
 	while (1) {
 		// 데이터 받기
@@ -101,7 +103,7 @@ DWORD  WINAPI test(LPVOID arg)
 		else if (retval == 0)
 			break;
 		EnterCriticalSection(&network->cs);
-		memcpy(&network->player, buf, retval);
+		memcpy(&network->recvMsg, buf, retval);
 
 		LeaveCriticalSection(&network->cs);
 		

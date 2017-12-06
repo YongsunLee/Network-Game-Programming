@@ -1,5 +1,11 @@
 #pragma once
 #include "stdafx.h"
+#include "Object\Player\Player.h"
+
+struct SendMsg {
+	D2D_POINT_2F playerPos[2];
+	CPlayer::Dir moveVec[2];
+};
 
 class CNetwork {
 private:
@@ -8,10 +14,9 @@ public:
 	HANDLE hThread;
 
 	SOCKET sock;
-	TestPlayer player[2];
+	SendMsg recvMsg;
 	UINT ClientID;
 
-	D2D_POINT_2F m_retMsg;
 
 	CNetwork();
 	~CNetwork();
@@ -67,13 +72,21 @@ public:
 
 	void MakeMsg(D2D_POINT_2F dir);
 
-	D2D_POINT_2F GetMsg() { 
+	D2D_POINT_2F GetPosition(int num) { 
+		D2D_POINT_2F m_retMsg;
 		EnterCriticalSection(&cs);
-		m_retMsg.x = player[0].pos[0];
-		m_retMsg.y = player[0].pos[1];
+		m_retMsg = recvMsg.playerPos[num];
 		LeaveCriticalSection(&cs);
 		
 		return m_retMsg; 
+	}
+	CPlayer::Dir GetMove(int num) {
+		CPlayer::Dir m_retMsg;
+		EnterCriticalSection(&cs);
+		m_retMsg = recvMsg.moveVec[num];
+		LeaveCriticalSection(&cs);
+
+		return m_retMsg;
 	}
 };
 static DWORD WINAPI test(LPVOID arg);

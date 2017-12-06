@@ -37,6 +37,7 @@ private:
 	Map								m_Map;
 
 	CPlayer							m_Player;
+	CPlayer							m_Player2;
 	CCamera							m_Camera;
 
 	list<unique_ptr<CBlock>>		m_lstBlock;
