@@ -53,7 +53,8 @@ using namespace D2DBitmap;
 #include <winsock2.h>
 #include <stdio.h>
 
-#define SERVERIP   "127.0.0.1"
+#define SERVERIP   "192.168.101.136"
+//#define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
 #define BUFSIZE    512
 
@@ -112,5 +113,6 @@ struct Map
 // 테스트용 구조체
 struct ClientMsg {
 	float CheckData[2];
+	bool SetBomb;
 	//D2D_POINT_2F Dir;
 };

@@ -16,12 +16,16 @@ CPlayer							m_Player[2];
 Map								m_Map;
 
 list<unique_ptr<CBlock>>		m_lstBlock;
-//list<unique_ptr<CBomb>>		m_lstBoom;
+list<unique_ptr<CBomb>>			m_lstBoom;
+
+float GetLength(D2D_POINT_2F sz);
 
 void OnCreate();
-void Update(float fTimeElapsed, QMsg msg);
+void MakeBoom(int ID);
+void DecodeMsg(QMsg msg);
+void Update(float fTimeElapsed);
 CTimer m_timer;
-UINT nClients=0;
+UINT nClients = 0;
 // 소켓 함수 오류 출력 후 종료
 void err_quit(char *msg)
 {
@@ -74,20 +78,28 @@ DWORD WINAPI test(LPVOID arg) {
 
 
 	while (1) {
-		EnterCriticalSection(&cs);
 		// 비어있지 않으면
+		EnterCriticalSection(&cs);
 		if (!clientDatabuf.empty()) {
 			test = clientDatabuf.front();
 			clientDatabuf.pop_front();
-			Update(m_timer.GetTimeElapsed(), test);
+			DecodeMsg(test);
 		}
-		
+
+
 		if (m_timer.Update()) {
+		Update(m_timer.GetTimeElapsed());
 			for (int i = 0; i < nClients; ++i) {
-				
 				sendMsg.playerPos[i] = m_Player[i].GetPosition();
 				sendMsg.moveVec[i] = m_Player[i].GetDir();
-
+				if (m_Player[i].GetActive()) sendMsg.status[i] = SendMsg::Living;
+				else sendMsg.status[i] = SendMsg::Death;
+			}
+			sendMsg.nbombCnt = m_lstBoom.size();
+			int bnum = 0;
+			for (auto& p:m_lstBoom) {
+				sendMsg.BombPos[bnum] = p->GetPosition();
+				sendMsg.BombStat[bnum++] = p->GetBoom();
 			}
 
 			for (auto& p : sockList) {
@@ -97,8 +109,8 @@ DWORD WINAPI test(LPVOID arg) {
 				}
 			}
 		}
-
 		LeaveCriticalSection(&cs);
+
 	}
 
 	return 0;
@@ -120,7 +132,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	retval = send(client_sock, (char *)&nClients, BUFSIZE, 0);
 	nClients++;
-	
+
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
@@ -246,7 +258,7 @@ int main(int argc, char *argv[])
 void OnCreate()
 {
 	m_Player[0] = CPlayer(SizeU(0, 0));
-	m_Player[1] = CPlayer(SizeU(10, 0));
+	m_Player[1] = CPlayer(SizeU(11, 0));
 
 	for (int i = 0; i < 12; ++i)
 		for (int j = 0; j < 12; ++j)
@@ -259,19 +271,83 @@ void OnCreate()
 		}
 }
 
-void Update(float fTimeElapsed, QMsg msg)
+void MakeBoom(int ID)
+{
+	printf("ID: %d, make_boom\n", ID);
+
+	D2D1_SIZE_U retCoord = m_Player[ID].GetCoord();
+
+	bool col = false;
+	for (auto& p : m_lstBlock) {
+		if (p->GetCoord() == retCoord) {
+			col = true;
+			break;
+		}
+	}
+	if (!col) {
+
+		auto item = make_unique<CBomb>(retCoord);
+
+		m_lstBoom.push_back(move(item));
+	}
+}
+
+void DecodeMsg(QMsg msg)
 {
 	int i = msg.ID;
 	m_Player[i].SetMoveX(msg.msg->CheckData[0]);
 	m_Player[i].SetMoveY(msg.msg->CheckData[1]);
-	for (auto& p  :m_lstBlock) {
-		auto pos = m_Player[i].GetPosition() + m_Player[i].GetSize();
-		if (p->Colided(pos + m_Player[i].GetMove()))
-		{
-			m_Player[i].Move(-1 * m_Player[i].GetMove(), fTimeElapsed);
-		}
-	}
-
-	m_Player[i].Update(fTimeElapsed);
-	
+	if (msg.msg->SetBomb)MakeBoom(i);
 }
+
+void Update(float fTimeElapsed)
+{
+	for (int i = 0; i < 2; ++i)
+	{
+		for (auto& p : m_lstBlock)
+		{
+			auto pos = m_Player[i].GetPosition() + m_Player[i].GetSize();
+			if (p->Colided(pos + m_Player[i].GetMove()))
+			{
+				m_Player[i].Move(-1 * m_Player[i].GetMove(), fTimeElapsed);
+			}
+		}
+
+		for (auto& p : m_lstBoom) {
+			p->Update(fTimeElapsed);
+			auto pos = m_Player[i].GetPosition() + m_Player[i].GetSize();
+			if (p->GetBoom()) {
+				if (p->ColideBoom(pos)) {
+					m_Player[i].SetActive(false);
+				}
+				for (auto& p2 : m_lstBoom) {
+					if (p != p2)
+					{
+						if (p->ColideBoom(p2->GetCoord())) {
+							p2->SetBoom();
+						}
+					}
+				}
+
+			}
+			if (p->Colided(pos + m_Player[i].GetMove()))
+			{
+				if (GetLength(m_Player[i].GetPosition() - p->GetPosition()) > m_Player[i].GetSize().bottom + p->GetSize().bottom)
+					m_Player[i].Move(-1 * m_Player[i].GetMove(), fTimeElapsed);
+			}
+		}
+
+		
+	}
+	for (auto iter = m_lstBoom.begin(); iter != m_lstBoom.end();) {
+		if ((*iter)->GetBoom() && (*iter)->GetTime() <= 0) {
+			iter = m_lstBoom.erase(iter);
+		}
+		else iter++;
+	}
+	for(int i=0 ; i<2 ;++i)
+		m_Player[i].Update(fTimeElapsed);
+
+}
+
+float GetLength(D2D_POINT_2F sz) { return sqrt((sz.x*sz.x) + (sz.y*sz.y)); }

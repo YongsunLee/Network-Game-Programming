@@ -7,7 +7,7 @@
 
 
 CTestScene::CTestScene()
-	: m_Player{ SizeU(0, 0) }, m_Player2{ SizeU(10, 0) }
+	: m_Player{ SizeU(0, 0) }, m_Player2{ SizeU(11, 0) }
 {
 }
 
@@ -77,24 +77,23 @@ bool CTestScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 		switch (wParam)
 		{
 		case 'A':
-		{
-			m_Player.SetMoveX(-1);
-		}
+			m_f2Move.x = -1;
+		
 		break;
 		case 'W':
-			m_Player.SetMoveY(-1);
+			m_f2Move.y=-1;
 
 			break;
 		case 'D':
-			m_Player.SetMoveX(1);
+			m_f2Move.x=1;
 
 			break;
 		case 'S':
-			m_Player.SetMoveY(1);
+			m_f2Move.y=1;
 
 			break;
 		case VK_SPACE:
-			MakeBoom();
+			m_bBomb = true;
 			break;
 		}
 		break;
@@ -102,20 +101,20 @@ bool CTestScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 		switch (wParam)
 		{
 		case 'A':
-			if (m_Player.GetMoveX() < 0)
-				m_Player.SetMoveX(0);
+			if (m_f2Move.x < 0)
+				m_f2Move.x = 0;
 			break;
 		case 'W':
-			if (m_Player.GetMoveY() < 0)
-				m_Player.SetMoveY(0);
+			if (m_f2Move.y< 0)
+				m_f2Move.y=0;
 			break;
 		case 'D':
-			if (m_Player.GetMoveX() > 0)
-				m_Player.SetMoveX(0);
+			if (m_f2Move.x > 0)
+				m_f2Move.x=0;
 			break;
 		case 'S':
-			if (m_Player.GetMoveY() > 0)
-				m_Player.SetMoveY(0);
+			if (m_f2Move.y> 0)
+				m_f2Move.y= 0;
 			break;
 
 		default:
@@ -153,6 +152,11 @@ bool CTestScene::OnCreate(wstring && tag, CWarp2DFramework * pFramework)
 	m_Player2.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
 	m_Player2.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
 
+	for (int i = 0; i < 144; ++i) {
+		m_Bombs[i].RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/wonder stone.png");
+	}
+
+
 	for (int i = 0; i < 12; ++i)
 		for (int j = 0; j < 12; ++j)
 		{
@@ -171,12 +175,24 @@ void CTestScene::Update(float fTimeElapsed)
 {
 
 	//m_Camera.SetPosition(m_Player.GetPosition());
-	m_pNetwork->MakeMsg(m_Player.GetMove());
+	m_pNetwork->MakeMsg(m_f2Move,m_bBomb);
+	///////////////////////////////////////////////////
+	
+	m_nBombCnt = m_pNetwork->GetBombCnt();
+	for (int i = 0; i < m_nBombCnt; ++i) {
+		m_Bombs[i].SetPosition(m_pNetwork->GetBombPos(i));
+	}
+	m_bBomb = false;
+	//////////////////////////////////////////////////
 	m_Player.SetPosition(m_pNetwork->GetPosition(0));
 	m_Player.SetDir(m_pNetwork->GetMove(0));
+	m_Player.SetActive(m_pNetwork->GetActive(0));
 
 	m_Player2.SetPosition(m_pNetwork->GetPosition(1));
 	m_Player2.SetDir(m_pNetwork->GetMove(1));
+	m_Player2.SetActive(m_pNetwork->GetActive(1));
+
+	/////////////////////////////////////////////////
 	/*for (auto& p : m_lstBlock) {
 		auto pos = m_Player.GetPosition() + m_Player.GetSize();
 		if (p->Colided(pos + m_Player.GetMove()))
@@ -184,7 +200,6 @@ void CTestScene::Update(float fTimeElapsed)
 			m_Player.Move(-1 * m_Player.GetMove(), fTimeElapsed);
 		}
 	}
-*/
 	for (auto& p : m_lstBoom) {
 		p->Update(fTimeElapsed);
 		auto pos = m_Player.GetPosition() + m_Player.GetSize();
@@ -216,6 +231,7 @@ void CTestScene::Update(float fTimeElapsed)
 		else iter++;
 	}
 
+*/
 
 	m_Player.Update(fTimeElapsed);
 	m_Player2.Update(fTimeElapsed);
@@ -236,9 +252,8 @@ void CTestScene::Draw(ID2D1HwndRenderTarget * pd2dRenderTarget)
 	for (const auto& p : m_lstBlock)
 		p->Draw(pd2dRenderTarget);
 
-
-	for (const auto& p : m_lstBoom)
-		p->Draw(pd2dRenderTarget);
+	for(int i=0 ; i<m_nBombCnt ; ++i)
+		m_Bombs[i].Draw(pd2dRenderTarget);
 
 
 	m_Player.Draw(pd2dRenderTarget);
@@ -257,13 +272,6 @@ void CTestScene::MakeBoom()
 			break;
 		}
 	}
-	if (!col) {
-
-		auto rendertarget = m_pFramework->GetRenderTarget();
-		auto item = make_unique<CBomb>(retCoord);
-
-		item->RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/wonder stone.png");
-		m_lstBoom.push_back(move(item));
-	}
+	if (!col)m_bBomb = true;
 
 }

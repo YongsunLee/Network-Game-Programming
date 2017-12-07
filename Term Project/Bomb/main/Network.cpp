@@ -73,13 +73,13 @@ void CNetwork::ClientSend(char * buf, SOCKET sock)
 	}
 }
 
-void CNetwork::MakeMsg(D2D_POINT_2F dir)
+void CNetwork::MakeMsg(D2D_POINT_2F dir, bool Bomb)
 {
 	ClientMsg testmsg;
 
 	testmsg.CheckData[0] = dir.x;
 	testmsg.CheckData[1] = dir.y;
-
+	testmsg.SetBomb = Bomb;
 	ClientSend((char *)&testmsg, sock);
 
 }

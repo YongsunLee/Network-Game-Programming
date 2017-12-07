@@ -44,6 +44,7 @@ public:
 	const D2D_SIZE_U& GetCoord() const { return m_szCoord; }
 
 	void SetActive(bool b) { IsActive = b; }
+	bool GetActive() { return IsActive; }
 private:
 
 	ComPtr<ID2D1Bitmap1>		m_bmpImage;

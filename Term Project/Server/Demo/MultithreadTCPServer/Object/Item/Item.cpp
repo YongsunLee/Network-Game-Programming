@@ -30,8 +30,9 @@ void CBomb::Update(float fTimeElapsed)
 {
 	m_fBombTimer -= fTimeElapsed;
 
+	if(!m_bBoom)
 	if (m_fBombTimer <= 0) {
-		m_bBoom = true;
+		SetBoom();
 	}
 }
 

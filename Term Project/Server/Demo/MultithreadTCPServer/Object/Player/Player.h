@@ -36,6 +36,7 @@ public:
 	const D2D_SIZE_U& GetCoord() const { return m_szCoord; }
 
 	void SetActive(bool b) { IsActive = b; }
+	bool GetActive() { return IsActive ; }
 private:
 
 	D2D_SIZE_U					m_szCoord;

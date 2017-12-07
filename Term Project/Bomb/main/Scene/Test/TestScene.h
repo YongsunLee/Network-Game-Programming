@@ -36,12 +36,16 @@ private:
 
 	Map								m_Map;
 
+	D2D_POINT_2F					m_f2Move{Point2F(0,0)};
+
 	CPlayer							m_Player;
 	CPlayer							m_Player2;
 	CCamera							m_Camera;
 
 	list<unique_ptr<CBlock>>		m_lstBlock;
-	list<unique_ptr<CBomb>>			m_lstBoom;
+	CBomb							m_Bombs[144];
+	bool							m_bBomb{ false };
+	int								m_nBombCnt{ 1 };
 	
 	unique_ptr<CNetwork>				m_pNetwork;
 	CUIInventory					m_uiInventory;

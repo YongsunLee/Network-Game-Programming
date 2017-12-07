@@ -3,8 +3,13 @@
 #include "Object\Player\Player.h"
 
 struct SendMsg {
+	enum PlayerStatus { Living, Death };
 	D2D_POINT_2F playerPos[2];
 	CPlayer::Dir moveVec[2];
+	PlayerStatus status[2];
+	int nbombCnt;
+	D2D_POINT_2F BombPos[144];
+	bool BombStat[144];
 };
 
 class CNetwork {
@@ -70,7 +75,7 @@ public:
 
 	void ClientSend(char* buf, SOCKET sock);
 
-	void MakeMsg(D2D_POINT_2F dir);
+	void MakeMsg(D2D_POINT_2F dir,  bool makeBomb);
 
 	D2D_POINT_2F GetPosition(int num) { 
 		D2D_POINT_2F m_retMsg;
@@ -88,5 +93,35 @@ public:
 
 		return m_retMsg;
 	}
+	bool GetActive(int num) {
+		bool retval;
+		EnterCriticalSection(&cs);
+		if (recvMsg.status[num] == SendMsg::Living) retval = true;
+		else retval= false;
+		LeaveCriticalSection(&cs);
+		return retval;
+	}
+	int GetBombCnt() {
+		int retval;
+		EnterCriticalSection(&cs);
+		retval = recvMsg.nbombCnt;
+		LeaveCriticalSection(&cs);
+		return retval;
+	}
+	D2D_POINT_2F GetBombPos(int num) {
+		D2D_POINT_2F retval;
+		EnterCriticalSection(&cs);
+		retval = recvMsg.BombPos[num];
+		LeaveCriticalSection(&cs);
+		return retval;
+	}
+	bool GetBombState(int num) {
+		bool retval;
+		EnterCriticalSection(&cs);
+		retval = recvMsg.BombStat[num];
+		LeaveCriticalSection(&cs);
+		return retval;
+	}
+
 };
 static DWORD WINAPI test(LPVOID arg);

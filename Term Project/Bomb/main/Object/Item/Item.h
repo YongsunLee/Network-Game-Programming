@@ -38,7 +38,7 @@ class CBomb
 	:public CItem
 {
 public :
-	CBomb(D2D_SIZE_U coord);
+	CBomb(D2D_SIZE_U coord = SizeU(0, 0));
 	virtual ~CBomb() override;
 	virtual void Update(float fTimeElapsed) override;
 	

@@ -60,6 +60,7 @@ using namespace D2D1;
 //
 //constexpr D2D_POINT_2F GetPositionByCoord(D2D_SIZE_U sz) noexcept { return D2D_POINT_2F{ sz.width * g_fTileWidth, sz.height * g_fTileHeight }; }
 
+
 enum Colide {
 	fail = -1,
 	top = 0,
@@ -153,7 +154,7 @@ struct ServerMsg {
 // 테스트용 구조체
 struct ClientMsg {
 	float CheckData[2];
-	//D2D_POINT_2F Dir;
+	bool SetBomb;
 };
 struct QMsg {
 	int ID;
@@ -161,6 +162,11 @@ struct QMsg {
 };
 
 struct SendMsg {
-	D2D_POINT_2F playerPos[2];
+enum PlayerStatus { Living, Death };
+D2D_POINT_2F playerPos[2];
 	CPlayer::Dir moveVec[2];
+	PlayerStatus status[2];
+	int nbombCnt;
+	D2D_POINT_2F BombPos[144];
+	bool BombStat[144];
 };
