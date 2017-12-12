@@ -53,10 +53,10 @@ using namespace D2DBitmap;
 #include <winsock2.h>
 #include <stdio.h>
 
-#define SERVERIP   "192.168.101.136"
-//#define SERVERIP   "127.0.0.1"
+//#define SERVERIP   "192.168.101.136"
+#define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
-#define BUFSIZE    512
+#define BUFSIZE    1024
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 #include "SystemDefine.h"

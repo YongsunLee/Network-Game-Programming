@@ -147,12 +147,12 @@ bool CTestScene::OnCreate(wstring && tag, CWarp2DFramework * pFramework)
 	m_Camera.SetAnchor(Point2F(0.f, 0.f));
 
 	m_Player.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
-	m_Player.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
 	m_Player2.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
-	m_Player2.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
-
-	for (int i = 0; i < 144; ++i) {
-		m_Bombs[i].RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/wonder stone.png");
+	m_Bombs[0].RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/BombPng.png");
+	m_Bombs[0].RegisterBoomImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/Boom.png");
+	for (int i = 0; i < 20; ++i) {
+		m_Bombs[i].RegisterImage(m_Bombs[0].GetBitmap());
+		m_Bombs[i].RegisterBoomImage(m_Bombs[0].GetBoomBitmap());
 	}
 
 
@@ -180,6 +180,7 @@ void CTestScene::Update(float fTimeElapsed)
 	m_nBombCnt = m_pNetwork->GetBombCnt();
 	for (int i = 0; i < m_nBombCnt; ++i) {
 		m_Bombs[i].SetPosition(m_pNetwork->GetBombPos(i));
+		m_Bombs[i].SetBoomState(m_pNetwork->GetBombState(i));
 	}
 	m_bBomb = false;
 	//////////////////////////////////////////////////

@@ -162,11 +162,12 @@ struct QMsg {
 };
 
 struct SendMsg {
-enum PlayerStatus { Living, Death };
-D2D_POINT_2F playerPos[2];
+	enum PlayerStatus { Living, Death };
+	enum BombStatus {SET, BOOM };
+	D2D_POINT_2F playerPos[2];
 	CPlayer::Dir moveVec[2];
 	PlayerStatus status[2];
 	int nbombCnt;
-	D2D_POINT_2F BombPos[144];
-	bool BombStat[144];
+	D2D_POINT_2F BombPos[20];
+	BombStatus BombStat[20];
 };

@@ -2,7 +2,7 @@
 #include "stdafx.h"
 
 #define SERVERPORT 9000
-#define BUFSIZE    512
+#define BUFSIZE    1024
 
 CRITICAL_SECTION cs;
 list<SOCKET> sockList;
@@ -99,7 +99,9 @@ DWORD WINAPI test(LPVOID arg) {
 			int bnum = 0;
 			for (auto& p:m_lstBoom) {
 				sendMsg.BombPos[bnum] = p->GetPosition();
-				sendMsg.BombStat[bnum++] = p->GetBoom();
+				if (p->GetBoom()) sendMsg.BombStat[bnum] = SendMsg::BOOM;
+				else sendMsg.BombStat[bnum] = SendMsg::SET;
+				bnum++;
 			}
 
 			for (auto& p : sockList) {

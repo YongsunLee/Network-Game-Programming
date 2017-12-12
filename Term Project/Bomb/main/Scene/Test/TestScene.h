@@ -43,7 +43,7 @@ private:
 	CCamera							m_Camera;
 
 	list<unique_ptr<CBlock>>		m_lstBlock;
-	CBomb							m_Bombs[144];
+	CBomb							m_Bombs[20];
 	bool							m_bBomb{ false };
 	int								m_nBombCnt{ 1 };
 	

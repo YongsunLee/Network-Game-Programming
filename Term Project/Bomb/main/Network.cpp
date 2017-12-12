@@ -47,6 +47,7 @@ CNetwork::CNetwork()
 CNetwork::~CNetwork()
 {
 	// closesocket()
+	TerminateThread(hThread,0);
 	closesocket(sock);
 
 	DeleteCriticalSection(&cs);

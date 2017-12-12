@@ -45,10 +45,16 @@ public :
 	bool ColideBoom(D2D_SIZE_U coord);
 	bool ColideBoom(D2D_RECT_F rect);
 	void SetBoom() { m_bBoom = true; }
-
+	void SetBoomState(bool state) { m_bBoom = state; }
 	bool GetBoom() { return m_bBoom; }
-
+	ID2D1Bitmap1* GetBoomBitmap() const { return m_bmpBoomImage.Get(); }
+	void RegisterBoomImage(CIndRes * indres, ID2D1HwndRenderTarget * RenderTarget, path filename);
+	void RegisterBoomImage(const ComPtr<ID2D1Bitmap1>& bmp);
+	void RegisterBoomImage(ComPtr<ID2D1Bitmap1>&& bmp) noexcept;
+	virtual void Draw(ID2D1HwndRenderTarget* RenderTarget) override;
 protected:
+	ComPtr<ID2D1Bitmap1>		m_bmpBoomImage;
 	float						m_fBombTimer	{ 3 };
 	bool						m_bBoom			{false};
+	D2D_RECT_F					m_rcBoomSize;
 };

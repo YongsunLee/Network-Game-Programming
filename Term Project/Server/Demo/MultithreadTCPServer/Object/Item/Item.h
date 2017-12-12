@@ -35,8 +35,11 @@ public :
 	bool ColideBoom(D2D_SIZE_U coord);
 	bool ColideBoom(D2D_RECT_F rect);
 	void SetBoom() { 
+		if (!m_bBoom) {
+
 		m_fBombTimer = 1.f;
 		m_bBoom = true; 
+		}
 	}
 
 	bool GetBoom() { return m_bBoom; }

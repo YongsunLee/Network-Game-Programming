@@ -50,6 +50,11 @@ void CItem::RegisterImage(ComPtr<ID2D1Bitmap1>&& bmp) noexcept
 
 CBomb::CBomb(D2D_SIZE_U coord) : CItem(coord)
 {
+	m_rcBoomSize = m_rcSize;
+	m_rcBoomSize.bottom *= 5;
+	m_rcBoomSize.top *= 5;
+	m_rcBoomSize.left *= 5;
+	m_rcBoomSize.right *= 5;
 }
 
 CBomb::~CBomb()
@@ -106,4 +111,40 @@ bool CBomb::ColideBoom(D2D_RECT_F rect)
 		}
 	}
 	return false;
+}
+
+void CBomb::RegisterBoomImage(CIndRes * indres, ID2D1HwndRenderTarget * RenderTarget, path filename)
+{
+	LoadImageFromFile(
+		indres->wicFactory()
+		, RenderTarget
+		, filename.c_str()
+		, &m_bmpBoomImage
+	);
+}
+
+void CBomb::RegisterBoomImage(const ComPtr<ID2D1Bitmap1>& bmp)
+{
+	m_bmpBoomImage = bmp;
+}
+
+
+
+void CBomb::RegisterBoomImage(ComPtr<ID2D1Bitmap1>&& bmp) noexcept
+{
+	m_bmpBoomImage = move(bmp);
+}
+
+void CBomb::Draw(ID2D1HwndRenderTarget * RenderTarget)
+{
+	if (m_bBoom) {
+		RenderTarget->DrawBitmap(
+			m_bmpBoomImage.Get()
+			, m_rcBoomSize + m_ptPoisition
+		);
+	}
+	RenderTarget->DrawBitmap(
+		m_bmpImage.Get()
+		, m_rcSize + m_ptPoisition
+	);
 }

@@ -4,12 +4,13 @@
 
 struct SendMsg {
 	enum PlayerStatus { Living, Death };
+	enum BombStatus { SET, BOOM };
 	D2D_POINT_2F playerPos[2];
 	CPlayer::Dir moveVec[2];
 	PlayerStatus status[2];
 	int nbombCnt;
-	D2D_POINT_2F BombPos[144];
-	bool BombStat[144];
+	D2D_POINT_2F BombPos[20];
+	BombStatus BombStat[20];
 };
 
 class CNetwork {
@@ -17,7 +18,6 @@ private:
 public:
 	CRITICAL_SECTION cs;
 	HANDLE hThread;
-
 	SOCKET sock;
 	SendMsg recvMsg;
 	UINT ClientID;
@@ -118,7 +118,10 @@ public:
 	bool GetBombState(int num) {
 		bool retval;
 		EnterCriticalSection(&cs);
-		retval = recvMsg.BombStat[num];
+		if(recvMsg.BombStat[num]==SendMsg::BOOM)
+			retval = true;
+		else 
+			retval = false;
 		LeaveCriticalSection(&cs);
 		return retval;
 	}
