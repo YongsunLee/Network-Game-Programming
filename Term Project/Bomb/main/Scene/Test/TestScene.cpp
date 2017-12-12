@@ -144,7 +144,6 @@ bool CTestScene::OnCreate(wstring && tag, CWarp2DFramework * pFramework)
 	rendertarget->CreateSolidColorBrush(ColorF{ ColorF::LightPink }, &m_pd2dsbrTileB);
 
 	m_Camera.SetPosition(D2D_POINT_2F{ g_fTileWidth * 11 / 2, g_fTileWidth * 11 / 2 });
-	//m_Player.GetPosition());
 	m_Camera.SetAnchor(Point2F(0.f, 0.f));
 
 	m_Player.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
@@ -230,7 +229,6 @@ void CTestScene::Update(float fTimeElapsed)
 		}
 		else iter++;
 	}
-
 */
 
 	m_Player.Update(fTimeElapsed);
