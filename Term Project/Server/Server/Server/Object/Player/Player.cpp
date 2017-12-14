@@ -3,7 +3,7 @@
 
 CPlayer::CPlayer(D2D_SIZE_U sz)
 	: CObject(Point2F(sz.width * g_fTileWidth, sz.height * g_fTileHeight), g_rcPlayermRect)
-	, m_szCoord{ sz }, m_Direction{Dir::bottom}
+	, m_szCoord{ sz }, m_Direction{Dir::bottom}, m_Move{Point2F(0,0)}
 {
 }
 

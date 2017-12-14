@@ -15,6 +15,7 @@ public:
 	void Move(D2D_POINT_2F pt){ m_ptPoisition = m_ptPoisition + pt; }
 	D2D_POINT_2F GetPosition() const { return m_ptPoisition; }
 	bool Colided(D2D_RECT_F rc);
+	bool Colided(D2D_RECT_F rc, D2D_RECT_F rc2);
 
 	void SetSize(D2D_RECT_F pt) { m_rcSize = pt; }
 	D2D_RECT_F GetSize() const { return m_rcSize; }

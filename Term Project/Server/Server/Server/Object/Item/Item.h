@@ -25,18 +25,25 @@ protected:
 class CBomb
 	:public CItem
 {
-public :
+public:
 	CBomb(D2D_SIZE_U coord);
 	virtual ~CBomb() override;
 	virtual void Update(float fTimeElapsed) override;
-	
+
 	bool ColideBoom(D2D_SIZE_U coord);
 	bool ColideBoom(D2D_RECT_F rect);
-	void SetBoom() { m_bBoom = true; }
+	void SetBoom() {
+		if (!m_bBoom) {
+
+			m_fBombTimer = 1.f;
+			m_bBoom = true;
+		}
+	}
 
 	bool GetBoom() { return m_bBoom; }
+	float GetTime() { return m_fBombTimer; }
 
 protected:
-	float						m_fBombTimer	{ 3 };
-	bool						m_bBoom			{false};
+	float						m_fBombTimer{ 3 };
+	bool						m_bBoom{ false };
 };

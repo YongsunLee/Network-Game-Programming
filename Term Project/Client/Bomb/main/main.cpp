@@ -11,8 +11,6 @@
 
 #define MAX_LOADSTRING 100
 
-
-
 namespace 
 {
 	HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -67,7 +65,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
-			if (msg.message == WM_QUIT) break;
+			if (msg.message == WM_QUIT) return 0;//break;
 			if (TranslateAccelerator(msg.hwnd, hAccelTable, &msg)) continue;
 
 			TranslateMessage(&msg);
@@ -124,7 +122,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	//	윈도우 스타일
 	DWORD dwStyle = 0
-		| WS_OVERLAPPED 	// 디폴트 윈도우. 타이틀 바와 크기 조절이 안되는 경계선을 가진다. 아무런 스타일도 주지 않으면 이 스타일이 적용된다.
+		//| WS_OVERLAPPED 	// 디폴트 윈도우. 타이틀 바와 크기 조절이 안되는 경계선을 가진다. 아무런 스타일도 주지 않으면 이 스타일이 적용된다.
 		| WS_CAPTION 		// 타이틀 바를 가진 윈도우를 만들며 WS_BORDER 스타일을 포함한다.
 		| WS_SYSMENU		// 시스템 메뉴를 가진 윈도우를 만든다.
 		| WS_MINIMIZEBOX	// 최소화 버튼을 만든다.

@@ -57,7 +57,7 @@ enum Colide {
 
 #define MAZE_SIZE 12
 
-#define MAX_FPS 1.0 / 60.0
+#define MAX_FPS 1.0 / 120.0
 #define TITLE_MAX_LENGTH 64
 
 #define MAX_UPDATE_FPS 1.0 / 3.0
@@ -88,7 +88,7 @@ struct Map
 	};
 
 };
-
+/*
 // 타이틀 화면 접속 메시지
 struct ClientPlugInMsg {
 	enum Scene{ title, main };
@@ -102,6 +102,15 @@ struct ServerConnectMsg {
 	ServerStatus status;	// 현재 게임 상태 (대기 or 시작 :: 클라에서 Scene 변경)
 };
 
+// 클라이언트에서 보낼 메시지
+struct ClientSendMsg {
+	enum PlayerDir { Left, Right, Up, Down, LeftUp, LeftDown, RightUp, RightDown };
+	int ClientID;	// 클라이언트의 ID
+	int BombCnt;	// 현재 폭탄 개수
+	bool DropBomb;	// 폭탄 설치 메시지
+};
+*/
+
 // 테스트용 구조체
 struct ClientSendMsg {
 	float CheckData[2];
@@ -113,19 +122,19 @@ struct QueueMsg {
 	int ID;
 	ClientSendMsg* msg;
 };
+struct SoketMgr {
+	SOCKET	sock;
+	int		ID;
+};
 
 // ServerSendMsg
 struct ServerSendMsg {
 	enum PlayerStatus { Living, Death };
+	enum BombStatus { SET, BOOM };
 	D2D_POINT_2F playerPos[2];
 	CPlayer::Dir moveVec[2];
 	PlayerStatus status[2];
 	int nbombCnt;
-	D2D_POINT_2F BombPos[144];
-	bool BombStat[144];
-};
-
-struct ChangeSceneMsg {
-	
-	bool Change;
+	D2D_POINT_2F BombPos[20];
+	BombStatus BombStat[20];
 };

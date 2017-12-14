@@ -9,6 +9,7 @@ class CPlayer
 public:
 	enum Dir { left = 1, top = 3, right = 2, bottom = 0 };
 
+	CPlayer() {}
 	CPlayer(D2D_SIZE_U pt);
 	virtual ~CPlayer() override;
 
@@ -21,13 +22,12 @@ public:
 	virtual void RegisterImage(const ComPtr<ID2D1Bitmap1>& bmp, D2D_SIZE_U szSprite);
 	virtual void RegisterImage(ComPtr<ID2D1Bitmap1>&& bmp, D2D_SIZE_U szSprite) noexcept;
 
-	void SetDir(Dir dir) { m_Direction = dir; }
 	void SetMoveX(float move) {
-			m_Move.x = move;
+		if (IsActive)m_Move.x = move;
 	}
+	void SetDir(Dir dir) { m_Direction = dir; }
 	void SetMoveY(float move) { m_Move.y = move; }
-	void SetMove(D2D_POINT_2F move) { m_Move = move; }
-	void SetPosition(D2D_POINT_2F pos) { m_ptPoisition = pos;}
+	void SetMove(D2D_POINT_2F move) { m_Move = move;}
 	void Move(float fTimeElapsed);
 	void Move(D2D_POINT_2F move,float fTimeElapsed);
 	void SetHorizon(float x) { m_Move.x = x; }
@@ -35,15 +35,25 @@ public:
 	void CloseCoord();
 	void CheckInput();
 
+	void RegisterWinImage(CIndRes * indres, ID2D1HwndRenderTarget * RenderTarget, path filename);
+	void RegisterWinImage(const ComPtr<ID2D1Bitmap1>& bmp);
+	void RegisterWinImage(ComPtr<ID2D1Bitmap1>&& bmp) noexcept;
+
+
 
 	D2D_POINT_2F GetMove() { return m_Move; }
 	float GetMoveX() {return m_Move.x; }
 	float GetMoveY() {return m_Move.y; }
+	Dir GetDir() { return m_Direction; }
 
 	const D2D_SIZE_U& GetCoord() const { return m_szCoord; }
 
+	void SetActive(bool b) { IsActive = b; }
+	bool GetActive() { return IsActive; }
+	bool						win{ false };
 private:
 
+	ComPtr<ID2D1Bitmap1>		m_bmpWinImage;
 	ComPtr<ID2D1Bitmap1>		m_bmpImage;
 	D2D_SIZE_U					m_szCoord;
 
@@ -54,5 +64,7 @@ private:
 	D2D_SIZE_U					m_szSprite;
 	UINT						m_iSprite;
 
+	float						m_fBombCnt;
 	float						m_fTick;
+	bool						IsActive{true};
 };

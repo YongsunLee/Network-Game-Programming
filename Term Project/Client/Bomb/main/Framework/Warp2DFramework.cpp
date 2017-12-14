@@ -4,6 +4,7 @@
 #include "Timer/Timer.h"
 #include "Scene/Scene.h"
 #include "Scene/Test/TestScene.h"
+#include "Scene/Title/TitleScene.h"
 
 #include "Warp2DFramework.h"
 
@@ -30,6 +31,7 @@ void CWarp2DFramework::OnCreate(HWND hWnd, HINSTANCE hInst, shared_ptr<CIndRes> 
 	m_pIndRes->CreateHwndRenderTarget(hWnd, &m_pd2dRenderTarget);
 
 	BuildScene<CTestScene>(L"Test"s);
+	BuildScene<CTitleScene>(L"Title"s);
 }
 
 void CWarp2DFramework::BuildScene(wstring Tag, const unique_ptr<CScene>& scene)
@@ -58,8 +60,6 @@ void CWarp2DFramework::Update(float fTimeElapsed)
 {
 	if (m_pCurrentScene) m_pCurrentScene->Update(fTimeElapsed);
 }
-
-
 
 bool CWarp2DFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {

@@ -28,6 +28,11 @@ public:
 	void CheckInput();
 
 
+	void SetPosByCoord(D2D_SIZE_U sz) {
+		m_ptPoisition = Point2F(sz.width * g_fTileWidth, sz.height * g_fTileHeight);
+
+	}
+
 	D2D_POINT_2F GetMove() { return m_Move; }
 	float GetMoveX() {return m_Move.x; }
 	float GetMoveY() { return m_Move.y; }
@@ -36,6 +41,7 @@ public:
 	const D2D_SIZE_U& GetCoord() const { return m_szCoord; }
 
 	void SetActive(bool b) { IsActive = b; }
+	bool GetActive() { return IsActive; }
 private:
 
 	D2D_SIZE_U					m_szCoord;

@@ -5,8 +5,10 @@
 #include "Object/Player/Player.h"
 #include "Object/Item/Item.h"
 #include "Object/Block/Block.h"
-#include "TCPClient/TCPClient.h"
 #include "UI/Inventory/Inventory.h"
+#include "Network.h"
+
+
 class CTestScene :
 	public CScene
 {
@@ -34,14 +36,16 @@ private:
 
 	Map								m_Map;
 
+	D2D_POINT_2F					m_f2Move{Point2F(0,0)};
+
 	CPlayer							m_Player;
+	CPlayer							m_Player2;
 	CCamera							m_Camera;
-
 	list<unique_ptr<CBlock>>		m_lstBlock;
-	list<unique_ptr<CItem>>			m_lstBoom;
+	CBomb							m_Bombs[20];
+	bool							m_bBomb{ false };
+	int								m_nBombCnt{ 1 };
 	
-	CUIInventory					m_uiInventory;
-
-	ClientMsg						m_Msg;	// test
-	CClient							m_TCP;
+	unique_ptr<CNetwork>			m_pNetwork;
+	//CUIInventory					m_uiInventory;
 };

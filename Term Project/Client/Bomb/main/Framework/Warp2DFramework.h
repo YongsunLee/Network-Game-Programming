@@ -2,10 +2,7 @@
 
 class CIndRes;
 class CTimer;
-
 class CScene;
-
-
 
 class CWarp2DFramework
 {
@@ -19,7 +16,6 @@ public:
 
 	// Framework 만들 때
 	void OnCreate(HWND hWnd, HINSTANCE hInst, shared_ptr<CIndRes> indres, shared_ptr<CTimer> timer);
-
 
 	// Scene 만들 때
 	template<typename Scene>
@@ -38,16 +34,10 @@ public:
 private:
 	void BuildScene(wstring Tag, const unique_ptr<CScene>& scene);
 
-
 public:
-
 	void FrameAdvance();
-
 	void Draw();
-
 	void Update(float fTimeElapsed);
-
-
 
 	// 후 처리가 없을 경우 true 반환
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
@@ -71,18 +61,18 @@ public:
 
 	// Framework에 필요한 것들.
 private:
-	
-	HWND							m_hWnd				{ nullptr }	;
-	HINSTANCE						m_hInst				{ nullptr }	;
 
-	shared_ptr<CIndRes>				m_pIndRes			{ nullptr }	;
-	shared_ptr<CTimer>				m_pTimer			{ nullptr }	;
+	HWND							m_hWnd{ nullptr };
+	HINSTANCE						m_hInst{ nullptr };
 
-	ComPtr<ID2D1HwndRenderTarget>	m_pd2dRenderTarget	{ nullptr }	;
+	shared_ptr<CIndRes>				m_pIndRes{ nullptr };
+	shared_ptr<CTimer>				m_pTimer{ nullptr };
 
-	D2D_RECT_L						m_rcClient						;
+	ComPtr<ID2D1HwndRenderTarget>	m_pd2dRenderTarget{ nullptr };
 
-	list<unique_ptr<CScene>>		m_lstScenes						;
-	CScene*							m_pCurrentScene		{ nullptr }	;
+	D2D_RECT_L						m_rcClient;
+
+	list<unique_ptr<CScene>>		m_lstScenes;
+	CScene*							m_pCurrentScene{ nullptr };
 
 };

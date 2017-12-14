@@ -7,13 +7,16 @@
 
 
 CTestScene::CTestScene()
-	: m_Player{ SizeU(0, 0) }
+	: m_Player{ SizeU(0, 0) }, m_Player2{ SizeU(11, 0) }
 {
 }
 
-
 CTestScene::~CTestScene()
 {
+	while (m_lstBlock.empty()) {
+		m_lstBlock.pop_front();
+	}
+	m_lstBlock.clear();
 }
 
 bool CTestScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -77,67 +80,65 @@ bool CTestScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 		switch (wParam)
 		{
 		case 'A':
-		{
-			m_Player.SetMoveX(-1);
-			m_Player.SetDir(CPlayer::Dir::left);
-		}
+			m_f2Move.x = -1;
+		
 		break;
 		case 'W':
-			m_Player.SetMoveY(-1);
-			m_Player.SetDir(CPlayer::Dir::top);
+			m_f2Move.y=-1;
+
 			break;
 		case 'D':
-			m_Player.SetMoveX(1);
-			m_Player.SetDir(CPlayer::Dir::right);
+			m_f2Move.x=1;
 
 			break;
 		case 'S':
-			m_Player.SetMoveY(1);
-			m_Player.SetDir(CPlayer::Dir::bottom);
+			m_f2Move.y=1;
+
 			break;
 		case VK_SPACE:
-			MakeBoom();
+			m_bBomb = true;
+			break;
+		case VK_ESCAPE:
+			PostQuitMessage(0);
 			break;
 		}
 		break;
-		
 	case WM_KEYUP:
 		switch (wParam)
 		{
 		case 'A':
-			if (m_Player.GetMoveX() < 0)
-				m_Player.SetMoveX(0);
+			if (m_f2Move.x < 0)
+				m_f2Move.x = 0;
 			break;
 		case 'W':
-			if (m_Player.GetMoveY() < 0)
-				m_Player.SetMoveY(0);
+			if (m_f2Move.y< 0)
+				m_f2Move.y=0;
 			break;
 		case 'D':
-			if (m_Player.GetMoveX() > 0)
-				m_Player.SetMoveX(0);
+			if (m_f2Move.x > 0)
+				m_f2Move.x=0;
 			break;
 		case 'S':
-			if (m_Player.GetMoveY() > 0)
-				m_Player.SetMoveY(0);
+			if (m_f2Move.y> 0)
+				m_f2Move.y= 0;
 			break;
 
 		default:
 			return false;
 		}
 		break;
-		
 	default:
 		return false;
 	}
-	m_Msg.Dir = m_Player.GetMove();
-	
-	
 	return(true);
 }
 
 bool CTestScene::OnCreate(wstring && tag, CWarp2DFramework * pFramework)
 {
 	if (!Base::OnCreate(std::move(tag), pFramework)) return false;
+
+	m_pNetwork = make_unique<CNetwork>();
+	m_pNetwork.get()->OnCreate();
 
 	auto rcClient = m_pFramework->GetClientSize();
 	m_Camera.SetClientSize(Point2F(rcClient.right, rcClient.bottom));
@@ -149,14 +150,24 @@ bool CTestScene::OnCreate(wstring && tag, CWarp2DFramework * pFramework)
 	rendertarget->CreateSolidColorBrush(ColorF{ ColorF::LightPink }, &m_pd2dsbrTileB);
 
 	m_Camera.SetPosition(D2D_POINT_2F{ g_fTileWidth * 11 / 2, g_fTileWidth * 11 / 2 });
-	//m_Player.GetPosition());
 	m_Camera.SetAnchor(Point2F(0.f, 0.f));
 
-	m_Player.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
-	m_Player.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png", SizeU(4, 4));
+	m_Player.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/player.png"s, SizeU(4, 4));
+	m_Player2.RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/goblin.png"s, SizeU(4, 4));
 
-	uniform_int_distribution<> pos_random{ 0,11 };
-	default_random_engine reng(random_device{}());
+	m_Player.RegisterWinImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/Win.png"s);
+	m_Player2.RegisterWinImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/Win.png"s);
+	
+	m_Bombs[0].RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/BombPng.png"s);
+	m_Bombs[0].RegisterBoomImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/Boom.png"s);
+	
+	
+	
+	
+	for (int i = 0; i < 20; ++i) {
+		m_Bombs[i].RegisterImage(m_Bombs[0].GetBitmap());
+		m_Bombs[i].RegisterBoomImage(m_Bombs[0].GetBoomBitmap());
+	}
 
 	for (int i = 0; i < 12; ++i)
 		for (int j = 0; j < 12; ++j)
@@ -174,29 +185,44 @@ bool CTestScene::OnCreate(wstring && tag, CWarp2DFramework * pFramework)
 
 void CTestScene::Update(float fTimeElapsed)
 {
+
 	//m_Camera.SetPosition(m_Player.GetPosition());
-	for (auto& p : m_lstBlock) {
-		auto pos = m_Player.GetPosition() + m_Player.GetSize();
-		if (p->Colided(pos + m_Player.GetMove()))
-		{
-			m_Player.Move(-1 * m_Player.GetMove(), fTimeElapsed);
-		}
+	m_pNetwork->MakeMsg(m_f2Move,m_bBomb);
+	///////////////////////////////////////////////////
+	
+	m_nBombCnt = m_pNetwork->GetBombCnt();
+	for (int i = 0; i < m_nBombCnt; ++i) {
+		m_Bombs[i].SetPosition(m_pNetwork->GetBombPos(i));
+		m_Bombs[i].SetBoomState(m_pNetwork->GetBombState(i));
+	}
+	m_bBomb = false;
+	//////////////////////////////////////////////////
+	m_Player.SetPosition(m_pNetwork->GetPosition(0));
+	m_Player.SetDir(m_pNetwork->GetMove(0));
+	m_Player.SetActive(m_pNetwork->GetActive(0));
+
+	m_Player2.SetPosition(m_pNetwork->GetPosition(1));
+	m_Player2.SetDir(m_pNetwork->GetMove(1));
+	m_Player2.SetActive(m_pNetwork->GetActive(1));
+
+	/////////////////////////////////////////////////
+
+	bool gameover = false;
+	if (!m_Player.GetActive() || !m_Player2.GetActive()) gameover = true;
+
+	if (m_Player.GetActive() && m_Player2.GetActive()) {
+		gameover = false;
+		m_Player.win = false;
+		m_Player2.win = false;
+	}
+	if (gameover) {
+		m_Player.win = m_Player.GetActive();
+		m_Player2.win = m_Player2.GetActive();
 	}
 
-	for (auto& p : m_lstBoom) {
-		auto pos = m_Player.GetPosition() + m_Player.GetSize();
-		if (p->Colided(pos + m_Player.GetMove()))
-		{
-			if(GetLength(m_Player.GetPosition() - p->GetPosition())>m_Player.GetSize().bottom+p->GetSize().bottom)
-			m_Player.Move(-1 * m_Player.GetMove(), fTimeElapsed);
-		}
-	}
 
-	//m_Player.SetPosition(m_TCP.ClientRecive());
-	//m_Player.Update(fTimeElapsed);
-	m_Player.GetCoord();
-
-	m_TCP.ClientSend(m_Msg);
+	m_Player.Update(fTimeElapsed);
+	m_Player2.Update(fTimeElapsed);
 }
 
 void CTestScene::Draw(ID2D1HwndRenderTarget * pd2dRenderTarget)
@@ -213,18 +239,18 @@ void CTestScene::Draw(ID2D1HwndRenderTarget * pd2dRenderTarget)
 	for (const auto& p : m_lstBlock)
 		p->Draw(pd2dRenderTarget);
 
-
-	for (const auto& p : m_lstBoom)
-		p->Draw(pd2dRenderTarget);
-
+	for(int i=0 ; i<m_nBombCnt ; ++i)
+		m_Bombs[i].Draw(pd2dRenderTarget);
 
 	m_Player.Draw(pd2dRenderTarget);
+	m_Player2.Draw(pd2dRenderTarget);
 
 }
 
 void CTestScene::MakeBoom()
 {
 	D2D1_SIZE_U retCoord = m_Player.GetCoord();
+
 	bool col = false;
 	for (auto& p : m_lstBlock) {
 		if (p->GetCoord() == retCoord) {
@@ -232,13 +258,6 @@ void CTestScene::MakeBoom()
 			break;
 		}
 	}
-	if (!col) {
-
-	auto rendertarget = m_pFramework->GetRenderTarget();
-	auto item = make_unique<CItem>(retCoord);
-
-	item->RegisterImage(m_pIndRes.get(), rendertarget.Get(), "Graphics/Icon/wonder stone.png");
-	m_lstBoom.push_back(move(item));
-	}
+	if (!col)m_bBomb = true;
 
 }

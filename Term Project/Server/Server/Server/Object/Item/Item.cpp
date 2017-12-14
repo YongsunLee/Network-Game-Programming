@@ -30,9 +30,10 @@ void CBomb::Update(float fTimeElapsed)
 {
 	m_fBombTimer -= fTimeElapsed;
 
-	if (m_fBombTimer <= 0) {
-		m_bBoom = true;
-	}
+	if (!m_bBoom)
+		if (m_fBombTimer <= 0) {
+			SetBoom();
+		}
 }
 
 bool CBomb::ColideBoom(D2D_SIZE_U coord)
@@ -59,10 +60,10 @@ bool CBomb::ColideBoom(D2D_RECT_F rect)
 	for (int i = -2; i < 3; ++i) {
 		D2D_SIZE_U retval = GetCoord();
 		retval.width += i;
-		
+
 		D2D_POINT_2F pos = Point2F(retval.width * g_fTileWidth, retval.height * g_fTileHeight);
 
-		if(Colided(m_rcSize+ pos, rect)) {
+		if (Colided(m_rcSize + pos, rect)) {
 			return true;
 		}
 	}
@@ -71,7 +72,7 @@ bool CBomb::ColideBoom(D2D_RECT_F rect)
 		retval.height += i;
 
 		D2D_POINT_2F pos = Point2F(retval.width * g_fTileWidth, retval.height * g_fTileHeight);
-		if (Colided(m_rcSize+pos, rect)) {
+		if (Colided(m_rcSize + pos, rect)) {
 			return true;
 		}
 	}

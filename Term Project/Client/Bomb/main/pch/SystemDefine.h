@@ -11,6 +11,7 @@ constexpr LONG CLIENT_MINIMUM_HEIGHT = 480;
 constexpr float g_fTileWidth = 20.f;
 constexpr float g_fTileHeight = 20.f;
 constexpr D2D_RECT_F g_rcItemRect{ -g_fTileWidth * 0.5f, -g_fTileHeight * 0.5f, g_fTileWidth * 0.5f, g_fTileHeight * 0.5f };
+constexpr D2D_RECT_F g_rcWinRect{ -g_fTileWidth *2, -g_fTileHeight * 2, g_fTileWidth * 2, g_fTileHeight * 2 };
 constexpr D2D_RECT_F g_rcPlayermRect{ -g_fTileWidth * 0.4f, -g_fTileHeight * 0.4f, g_fTileWidth * 0.4f, g_fTileHeight * 0.4f };
 
 // 캡션 FPS 출력 여부 -------------------

@@ -6,7 +6,7 @@
 #pragma once
 
 #include "targetver.h"
-
+#define  _WINSOCK_DEPRECATED_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
 // Windows 헤더 파일:
 #include <windows.h>
@@ -16,9 +16,6 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-#include <WinSock2.h>
-#pragma comment(lib, "Ws2_32.lib")
-#include <stdio.h>
 
 // C++ 런타임 헤더 파일입니다.
 #include <iostream>
@@ -50,9 +47,22 @@ using namespace D2D1;
 #include "D2D_Operator.h"
 using namespace D2DBitmap;
 
+
+//Network
+#pragma comment(lib, "ws2_32")
+#include <winsock2.h>
+#include <stdio.h>
+
+//#define SERVERIP   "192.168.82.72"
+#define SERVERIP   "127.0.0.1"	
+#define SERVERPORT 9000
+#define BUFSIZE    1024
+
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 #include "SystemDefine.h"
 #include "inlineFuncs.h"
+
+
 
 constexpr D2D_POINT_2F GetPositionByCoord(D2D_SIZE_U sz) noexcept { return D2D_POINT_2F{ sz.width * g_fTileWidth, sz.height * g_fTileHeight }; }
 
@@ -63,6 +73,12 @@ enum Colide {
 	left = 2,
 	right = 3,
 };
+enum InputMessage {
+	LUp = 7 , Up=8,  RUp = 9,
+	Left=4 , None = 5, Right = 6,
+	LDown = 1, Down=2 , RDown =3,
+};
+
 
 #define MAZE_SIZE 12
 
@@ -93,56 +109,10 @@ struct Map
 
 };
 
-// 타이틀 화면 접속 메시지
-struct ClientPlugInMsg {
-	bool StatMsg;
-};
-
-// 타이틀 화면에서 메시지 받은거 답장 (서버)
-struct ServerConnectMsg {
-	enum ServerStatus {Wait, Start};
-	int ClientID;			// 클라이언트 아이디
-	int PlayerCnt;			// 현재 접속 클라이언트 인원수
-	ServerStatus status;	// 현재 게임 상태 (대기 or 시작 :: 클라에서 Scene 변경)
-};
-
-// 클라이언트에서 보낼 메시지
-struct ClientSendMsg {
-	enum PlayerDir {Left, Right, Up, Down, LeftUp, LeftDown, RightUp, RightDown};
-	int ClientID;	// 클라이언트의 ID
-	int BombCnt;	// 현재 폭탄 개수
-	bool DropBomb;	// 폭탄 설치 메시지
-};
-
-// 플레이어 구조체
-struct Player {
-	enum PlayerDir { Left, Right, Up, Down, LeftUp, LeftDown, RightUp, RightDown };
-	enum PlayerStatus { Living, Death };
-	D2D1_POINT_2F position;
-	PlayerDir dir;
-	PlayerStatus status;
-};
-
-// 폭탄 구조체
-struct Bomb {
-	enum BombStatus { Drop, Explosion };
-	D2D1_POINT_2F position;
-	BombStatus status;
-};
-
-// 게임 상태
-enum GameStatus { Playing, GameOver };
-
-// 서버에서 보낼 메시지 구조체 (클라에선 받을 메시지 구조체)
-struct ServerMsg {
-	int Map[12][12];
-	Bomb bomb;
-	Player player;
-	GameStatus gameStatus;
-};
 
 // 테스트용 구조체
 struct ClientMsg {
-	int CheckData;
-	D2D_POINT_2F Dir;
+	float CheckData[2];
+	bool SetBomb;
+	//D2D_POINT_2F Dir;
 };

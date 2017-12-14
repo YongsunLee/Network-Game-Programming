@@ -21,3 +21,14 @@ bool CObject::Colided(D2D_RECT_F rc)
 	if (rc.top > colideRect.bottom) return false;
 	return true;
 }
+
+bool CObject::Colided(D2D_RECT_F rc, D2D_RECT_F rc2)
+{
+	D2D_RECT_F	colideRect = rc2;
+	if (rc.right < colideRect.left) return false;
+	if (rc.left > colideRect.right) return false;
+	if (rc.bottom < colideRect.top) return false;
+	if (rc.top > colideRect.bottom) return false;
+	return true;
+}
+
